@@ -148,20 +148,26 @@ namespace BranchSDK
             {
                 if (data["metadata"] != null)
                 {
-                    Dictionary<string, object> metaTemp = data["metadata"] as Dictionary<string, object>;
-
-                    if (metaTemp != null)
+                    if (data["metadata"] is string metadataJson)
                     {
-                        if (metaTemp.ContainsKey("+clicked_branch_link")) {
-                            if (metaTemp["+clicked_branch_link"].ToString().Equals("1") ) {
-                                metaTemp["+clicked_branch_link"] = "true" as object;
-                            }
-                            else {
-                                metaTemp["+clicked_branch_link"] = "false" as object;
-                            }
-                        }
+                        Dictionary<string, object> metaTemp = JsonConvert.DeserializeObject<Dictionary<string, object>>(metadataJson);
 
-                        metadata.loadFromDictionary(metaTemp);
+                        if (metaTemp != null)
+                        {
+                            if (metaTemp.ContainsKey("+clicked_branch_link"))
+                            {
+                                if (metaTemp["+clicked_branch_link"].ToString().Equals("1"))
+                                {
+                                    metaTemp["+clicked_branch_link"] = "true" as object;
+                                }
+                                else
+                                {
+                                    metaTemp["+clicked_branch_link"] = "false" as object;
+                                }
+                            }
+
+                            metadata.loadFromDictionary(metaTemp);
+                        }
                     }
                 }
             }

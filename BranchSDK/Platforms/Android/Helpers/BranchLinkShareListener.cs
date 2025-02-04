@@ -6,36 +6,51 @@ namespace BranchSDK.Droid
 	{
 		private IBranchLinkShareInterface callback = null;
 
-		public BranchLinkShareListener (IBranchLinkShareInterface callback)
+		public BranchLinkShareListener(IBranchLinkShareInterface callback)
 		{
 			this.callback = callback;
 		}
 
-		public void OnChannelSelected (string channel) {
-			if (callback == null) {
+		public void OnChannelSelected(string channel)
+		{
+			if (callback == null)
+			{
 				return;
 			}
 
-			callback.ChannelSelected (channel);
+			callback.ChannelSelected(channel);
 		}
 
-		public void OnLinkShareResponse (string sharedLink, string sharedChannel, IO.Branch.Referral.BranchError error) {
-			if (callback == null) {
+		public void OnChannelSelectedBranchLinkShareListener(string p0)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnLinkShareResponse(string sharedLink, string sharedChannel, IO.Branch.Referral.BranchError error)
+		{
+			if (callback == null)
+			{
 				return;
 			}
 
-			if (error == null) {
-				callback.LinkShareResponse (sharedLink, sharedChannel);
+			if (error == null)
+			{
+				callback.LinkShareResponse(sharedLink, sharedChannel);
 			}
-			else {
-				BranchError err = new BranchError (error.Message, error.ErrorCode);
-				callback.LinkShareRequestError (err);
+			else
+			{
+				BranchError err = new BranchError(error.Message, error.ErrorCode);
+				callback.LinkShareRequestError(err);
 			}
 		}
 
-		public void OnShareLinkDialogDismissed () {}
+		public void OnLinkShareResponseBranchLinkShareListener(string p0, string p1, IO.Branch.Referral.BranchError p2)
+		{
+			throw new NotImplementedException();
+		}
 
-		public void OnShareLinkDialogLaunched () {}
+		public void OnShareLinkDialogDismissed() { }
+		public void OnShareLinkDialogLaunched() { }
 	}
 }
 

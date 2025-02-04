@@ -30,12 +30,14 @@ namespace BranchSDK
 
 		public void OnActivityStarted(Activity activity)
 		{
+			Console.WriteLine("BranchSDK .NET MAUI: OnActivityStarted: " + activity.LocalClassName);
 			BranchAndroid.getInstance().CurrActivity = activity;
-			IncreaseActivityCounter (activity);
+			IncreaseActivityCounter(activity);
 		}
 
 		public void OnActivityStopped(Activity activity)
 		{
+			Console.WriteLine("BranchSDK .NET MAUI: OnActivityStopped: " + activity.LocalClassName);
 			DecreaseActivityCounter();
 		}
 
@@ -43,10 +45,13 @@ namespace BranchSDK
 		{
 			if (activeCounter == 0)
 			{
-				if (callback != null) {
-					BranchAndroid.getInstance ().InitSession (callback);
-				} else if (callbackBUO != null) {
-					BranchAndroid.getInstance ().InitSession (callbackBUO);
+				if (callback != null)
+				{
+					BranchAndroid.getInstance().InitSession(callback);
+				}
+				else if (callbackBUO != null)
+				{
+					BranchAndroid.getInstance().InitSession(callbackBUO);
 				}
 			}
 
@@ -55,7 +60,8 @@ namespace BranchSDK
 
 		private void DecreaseActivityCounter()
 		{
-			if (activeCounter > 0) {
+			if (activeCounter > 0)
+			{
 				activeCounter--;
 			}
 		}

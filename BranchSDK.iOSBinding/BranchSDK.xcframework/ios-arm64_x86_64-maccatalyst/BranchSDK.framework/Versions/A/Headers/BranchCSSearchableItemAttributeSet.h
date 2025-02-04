@@ -5,6 +5,7 @@
 //  Created by Derrick Staten on 9/8/15.
 //  Copyright © 2015 Branch Metrics. All rights reserved.
 //
+#if !TARGET_OS_TV
 
 #if __has_feature(modules)
 @import Foundation;
@@ -26,9 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init;
 
-#ifdef __IPHONE_14_0
-- (instancetype)initWithContentType:(UTType *)contentType NS_AVAILABLE(10_16, 14_0);
-#endif
+- (instancetype)initWithContentType:(UTType *)contentType API_AVAILABLE(ios(14), macCatalyst(14));
 
 - (instancetype)initWithItemContentType:(NSString *)type;
 
@@ -41,3 +40,4 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+#endif

@@ -18,20 +18,23 @@ namespace BranchSDK
 
 		// TODO: can we pull the plugin version automatically?
 		private static String pluginName = "Xamarin";
-		private static String pluginVersion = "9.0.1";
+		private static String pluginVersion = "10.0.0";
 
-		private BranchAndroid () { }
+		private BranchAndroid() { }
 
-		public static BranchAndroid getInstance() {
-			if (instance == null) {
-				throw new BranchException ("You must initialize Branch before you can use the Branch object!");
+		public static BranchAndroid getInstance()
+		{
+			if (instance == null)
+			{
+				throw new BranchException("You must initialize Branch before you can use the Branch object!");
 			}
 
 			return instance;
 		}
 
-		private AndroidNativeBranch NativeBranch {
-			get { return AndroidNativeBranch.GetInstance (appContext, branchKey); }
+		private AndroidNativeBranch NativeBranch
+		{
+			get { return AndroidNativeBranch.GetAutoInstance(appContext, branchKey); }
 		}
 
 		#endregion
@@ -49,144 +52,217 @@ namespace BranchSDK
 		private Context appContext = null;
 		public Activity CurrActivity { get; set; }
 
-		public static void GetAutoInstance(Context appContext) {
+		public static void GetAutoInstance(Context appContext)
+		{
 			AndroidNativeBranch.RegisterPlugin(pluginName, pluginVersion);
 			AndroidNativeBranch.GetAutoInstance(appContext);
-            AndroidNativeBranch.DisableInstantDeepLinking(true);
-        }
-
-		public static void Init(Context context, String branchKey, IBranchSessionInterface callback) {
-			Init (((Activity)context).Application, branchKey, callback);
+			AndroidNativeBranch.DisableInstantDeepLinking(true);
 		}
 
-		public static void Init(Context context, String branchKey, IBranchBUOSessionInterface callback) {
-			Init (((Activity)context).Application, branchKey, callback);
+		public static void Init(Context context, String branchKey, IBranchSessionInterface callback)
+		{
+			Init(((Activity)context).Application, branchKey, callback);
 		}
 
-		public static void Init(Android.App.Application app, String branchKey, IBranchSessionInterface callback) {
+		public static void Init(Context context, String branchKey, IBranchBUOSessionInterface callback)
+		{
+			Init(((Activity)context).Application, branchKey, callback);
+		}
 
-			if (instance != null) {
+		public static void Init(Android.App.Application app, String branchKey, IBranchSessionInterface callback)
+		{
+
+			if (instance != null)
+			{
 				return;
 			}
 
-			if (!branchKey.StartsWith("key_", StringComparison.Ordinal)) {
-				Console.WriteLine (branchKey + ":  Usage of App Key is deprecated, please move toward using a Branch key");
+			if (!branchKey.StartsWith("key_", StringComparison.Ordinal))
+			{
+				Console.WriteLine(branchKey + ":  Usage of App Key is deprecated, please move toward using a Branch key");
 			}
 
-			instance = new BranchAndroid ();
+			instance = new BranchAndroid();
 			Branch.branchInstance = instance;
 			instance.appContext = app.ApplicationContext;
 			instance.branchKey = branchKey;
 
 			AndroidNativeBranch.RegisterPlugin(pluginName, pluginVersion);
+
 			if (EnableLogging)
 			{
-				AndroidNativeBranch.EnableLogging();
+				AndroidNativeBranch.EnableLogging(BranchLogger.BranchLogLevel.Verbose);
 			}
 
 			instance.lifeCycleHandler = new BranchAndroidLifeCycleHandler(callback);
 			app.RegisterActivityLifecycleCallbacks(instance.lifeCycleHandler);
 
-            // we call IniSession in BranchAndroidLifeCycleHandler.OnActivityStarted
-            //getInstance().InitSession(callback);
-        }
+			// we call IniSession in BranchAndroidLifeCycleHandler.OnActivityStarted
+			//getInstance().InitSession(callback);
+		}
 
-		public static void Init(Android.App.Application app, String branchKey, IBranchBUOSessionInterface callback) {
+		public static void Init(Android.App.Application app, String branchKey, IBranchBUOSessionInterface callback)
+		{
 
-			if (instance != null) {
+			if (instance != null)
+			{
 				return;
 			}
 
-			if (!branchKey.StartsWith("key_", StringComparison.Ordinal)) {
-				Console.WriteLine (branchKey + ":  Usage of App Key is deprecated, please move toward using a Branch key");
+			if (!branchKey.StartsWith("key_", StringComparison.Ordinal))
+			{
+				Console.WriteLine(branchKey + ":  Usage of App Key is deprecated, please move toward using a Branch key");
 			}
 
-			instance = new BranchAndroid ();
+			instance = new BranchAndroid();
 
 			Branch.branchInstance = instance;
 			instance.appContext = app.ApplicationContext;
 			instance.branchKey = branchKey;
 
 			AndroidNativeBranch.RegisterPlugin(pluginName, pluginVersion);
+
 			if (EnableLogging)
-            {
-				AndroidNativeBranch.EnableLogging();
+			{
+				AndroidNativeBranch.EnableLogging(BranchLogger.BranchLogLevel.Verbose);
 			}
 
-            instance.lifeCycleHandler = new BranchAndroidLifeCycleHandler(callback);
+			instance.lifeCycleHandler = new BranchAndroidLifeCycleHandler(callback);
 			app.RegisterActivityLifecycleCallbacks(instance.lifeCycleHandler);
+		}
 
-            // we call IniSession in BranchAndroidLifeCycleHandler.OnActivityStarted
-            //getInstance().InitSession(callback);
+		public override void InitSession(IBranchSessionInterface callback)
+		{
+			base.InitSession(callback);
+			BranchSessionListener obj = new BranchSessionListener(callback);
+			callbacksList.Add(obj as Object);
+
+			AndroidNativeBranch.SessionBuilder(CurrActivity)
+				.WithCallback(obj)
+				.WithData(CurrActivity.Intent.Data)
+				.Init();
+		}
+
+		public override void InitSession(IBranchBUOSessionInterface callback)
+		{
+			base.InitSession(callback);
+			BranchBUOSessionListener obj = new BranchBUOSessionListener(callback);
+			callbacksList.Add(obj as Object);
+
+			AndroidNativeBranch.SessionBuilder(CurrActivity)
+					.WithCallback(obj)
+					.WithData(CurrActivity.Intent.Data)
+					.Init();
+		}
+
+		// public void ReInitSession(Intent intent, IBranchSessionInterface callback, Activity activity)
+		// {
+		// 	if (intent?.Data != null)
+		// 	{
+		// 		callbacksList.Clear();
+		// 		BranchSessionListener obj = new BranchSessionListener(callback);
+		// 		callbacksList.Add(obj as Object);
+
+		// 		Console.WriteLine("BRANCHSDK .NET MAUI: ReInitSession Activity: " + activity);
+
+		// 		intent.PutExtra("branch_force_new_session", true);
+		// 		activity.Intent = intent;
+
+		// 		CurrActivity = activity;
+
+		// 		AndroidNativeBranch.SessionBuilder(activity)
+		// 			.WithCallback(obj)
+		// 			.WithData(intent.Data)
+		// 			.ReInit();
+		// 	}
+		// 	else
+		// 	{
+		// 		Console.WriteLine("BRANCHSDK .NET MAUI: ReInitSession: No URL in intent: " + intent);
+		// 	}
+		// }
+
+		// public void ReInitSession(Intent intent, IBranchBUOSessionInterface callback, Activity activity)
+		// {
+		// 	if (intent?.Data != null)
+		// 	{
+		// 		callbacksList.Clear();
+		// 		BranchBUOSessionListener obj = new BranchBUOSessionListener(callback);
+		// 		callbacksList.Add(obj as Object);
+
+		// 		intent.PutExtra("branch_force_new_session", true);
+		// 		activity.Intent = intent;
+
+		// 		CurrActivity = activity;
+
+		// 		AndroidNativeBranch.SessionBuilder(activity)
+		// 			.WithCallback(obj)
+		// 			.WithData(intent.Data)
+		// 			.ReInit();
+		// 	}
+		// 	else
+		// 	{
+		// 		Console.WriteLine("BRANCHSDK .NET MAUI: ReInitSession: No URL in intent: " + intent);
+		// 	}
+		// }
+
+		public override void NotifyNativeInit()
+		{
+			AndroidNativeBranch.NotifyNativeToInit();
 		}
 
 		#endregion
 
-		#region Session methods
-
-		public override void InitSession(IBranchSessionInterface callback) {
-			base.InitSession (callback);
-			BranchSessionListener obj = new BranchSessionListener (callback);
-			callbacksList.Add (obj as Object);
-
-            NativeBranch.InitSession(obj);
-            //NativeBranch.ReInitSession(CurrActivity, obj);
-        }
-
-		public override void InitSession (IBranchBUOSessionInterface callback) {
-			base.InitSession (callback);
-			BranchBUOSessionListener obj = new BranchBUOSessionListener (callback);
-			callbacksList.Add (obj as Object);
-
-            NativeBranch.InitSession(obj);
-            //NativeBranch.ReInitSession(CurrActivity, obj);
-        }
-
-		public override Dictionary<String, object> GetLastReferringParams () {
+		public override Dictionary<String, object> GetLastReferringParams()
+		{
 			return BranchAndroidUtils.ToDictionary(NativeBranch.LatestReferringParams);
 		}
 
-		public override BranchUniversalObject GetLastReferringBranchUniversalObject () {
-			return new BranchUniversalObject (BranchAndroidUtils.ToDictionary(NativeBranch.LatestReferringParams));
+		public override BranchUniversalObject GetLastReferringBranchUniversalObject()
+		{
+			return new BranchUniversalObject(BranchAndroidUtils.ToDictionary(NativeBranch.LatestReferringParams));
 		}
 
-		public override BranchLinkProperties GetLastReferringBranchLinkProperties () {
-			return new BranchLinkProperties (BranchAndroidUtils.ToDictionary(NativeBranch.LatestReferringParams));
+		public override BranchLinkProperties GetLastReferringBranchLinkProperties()
+		{
+			return new BranchLinkProperties(BranchAndroidUtils.ToDictionary(NativeBranch.LatestReferringParams));
 		}
 
-		public override Dictionary<String, object> GetFirstReferringParams () {
+		public override Dictionary<String, object> GetFirstReferringParams()
+		{
 			return BranchAndroidUtils.ToDictionary(NativeBranch.FirstReferringParams);
 		}
 
-		public override BranchUniversalObject GetFirstReferringBranchUniversalObject () {
-			return new BranchUniversalObject (BranchAndroidUtils.ToDictionary(NativeBranch.FirstReferringParams));
+		public override BranchUniversalObject GetFirstReferringBranchUniversalObject()
+		{
+			return new BranchUniversalObject(BranchAndroidUtils.ToDictionary(NativeBranch.FirstReferringParams));
 		}
 
-		public override BranchLinkProperties GetFirstReferringBranchLinkProperties () {
-			return new BranchLinkProperties (BranchAndroidUtils.ToDictionary(NativeBranch.FirstReferringParams));
+		public override BranchLinkProperties GetFirstReferringBranchLinkProperties()
+		{
+			return new BranchLinkProperties(BranchAndroidUtils.ToDictionary(NativeBranch.FirstReferringParams));
 		}
-
-		#endregion
-
 
 		#region Identity methods
 
-		public override void ResetUserSession() {
+		public override void ResetUserSession()
+		{
 			NativeBranch.ResetUserSession();
 		}
 
-		public override void SetIdentity(String user, IBranchIdentityInterface callback) {
-			BranchIdentityListener obj = new BranchIdentityListener (callback);
-			callbacksList.Add (obj as Object);
+		public override void SetIdentity(String user, IBranchIdentityInterface callback)
+		{
+			BranchIdentityListener obj = new BranchIdentityListener(callback);
+			callbacksList.Add(obj as Object);
 
-			NativeBranch.SetIdentity (user, obj);
+			NativeBranch.SetIdentity(user, obj);
 		}
 
-		public override void Logout (IBranchIdentityInterface callback = null) {
-			BranchIdentityListener obj = new BranchIdentityListener (callback);
-			callbacksList.Add (obj as Object);
+		public override void Logout(IBranchIdentityInterface callback = null)
+		{
+			BranchIdentityListener obj = new BranchIdentityListener(callback);
+			callbacksList.Add(obj as Object);
 
-			NativeBranch.Logout (obj);
+			NativeBranch.Logout(obj);
 		}
 
 		#endregion
@@ -194,18 +270,18 @@ namespace BranchSDK
 
 		#region Short Links methods
 
-		public override void GetShortURL (IBranchUrlInterface callback,
+		public override void GetShortURL(IBranchUrlInterface callback,
 			BranchUniversalObject universalObject,
 			BranchLinkProperties linkProperties)
 		{
 
-			BranchUrlListener obj = new BranchUrlListener (callback);
-			callbacksList.Add (obj as Object);
+			BranchUrlListener obj = new BranchUrlListener(callback);
+			callbacksList.Add(obj as Object);
 
 			IO.Branch.Indexing.BranchUniversalObject resBuo = BranchAndroidUtils.ToNativeBUO(universalObject);
 			IO.Branch.Referral.Util.LinkProperties resBlp = BranchAndroidUtils.ToNativeBLP(linkProperties);
 
-			resBuo.GenerateShortUrl (appContext, resBlp, obj);
+			resBuo.GenerateShortUrl(appContext, resBlp, obj);
 		}
 
 		#endregion
@@ -213,21 +289,21 @@ namespace BranchSDK
 
 		#region Share Link methods
 
-		public override void ShareLink (IBranchLinkShareInterface callback,
+		public override void ShareLink(IBranchLinkShareInterface callback,
 			BranchUniversalObject universalObject,
 			BranchLinkProperties linkProperties,
 			string message)
 		{
 
-			BranchLinkShareListener obj = new BranchLinkShareListener (callback);
-			callbacksList.Add (obj as Object);
+			BranchLinkShareListener obj = new BranchLinkShareListener(callback);
+			callbacksList.Add(obj as Object);
 
 			IO.Branch.Indexing.BranchUniversalObject resBuo = BranchAndroidUtils.ToNativeBUO(universalObject);
 			IO.Branch.Referral.Util.LinkProperties resBlp = BranchAndroidUtils.ToNativeBLP(linkProperties);
 
-			IO.Branch.Referral.Util.ShareSheetStyle style = 
+			IO.Branch.Referral.Util.ShareSheetStyle style =
 				new IO.Branch.Referral.Util.ShareSheetStyle(appContext, "", message);
-			
+
 			style.AddPreferredSharingOption(IO.Branch.Referral.SharingHelper.SHARE_WITH.Facebook);
 			style.AddPreferredSharingOption(IO.Branch.Referral.SharingHelper.SHARE_WITH.Twitter);
 			style.AddPreferredSharingOption(IO.Branch.Referral.SharingHelper.SHARE_WITH.Message);
@@ -236,66 +312,74 @@ namespace BranchSDK
 			style.AddPreferredSharingOption(IO.Branch.Referral.SharingHelper.SHARE_WITH.GoogleDoc);
 			style.AddPreferredSharingOption(IO.Branch.Referral.SharingHelper.SHARE_WITH.WhatsApp);
 
-			resBuo.ShowShareSheet (CurrActivity, resBlp, style, obj);
+			resBuo.ShowShareSheet(CurrActivity, resBlp, style, obj);
 		}
 
 		#endregion
 
+		#region Send Event methods
 
-		#region Action methods
-
-		public override void UserCompletedAction (String action, Dictionary<string, object> metadata = null) {
-			if (metadata != null) {
-				NativeBranch.UserCompletedAction(action, BranchAndroidUtils.ToJSONObject(metadata));
-			}
-			else {
-				NativeBranch.UserCompletedAction(action);
-			}
+		public override void SendEvent(BranchEvent branchEvent)
+		{
+			BranchAndroidUtils.SendEvent(branchEvent, appContext);
 		}
 
 		#endregion
-
-
-        #region Send Evene methods
-
-        public override void SendEvent(BranchEvent branchEvent) {
-            BranchAndroidUtils.SendEvent(branchEvent, appContext);
-        }
-
-        #endregion
 
 		#region Configuration methods
 
-		public override void SetRetryInterval (int retryInterval) {
-			NativeBranch.SetRetryInterval (retryInterval);
+		public override void SetRetryInterval(int retryInterval)
+		{
+			NativeBranch.SetRetryInterval(retryInterval);
 		}
 
-		public override void SetMaxRetries (int maxRetries) {
-			NativeBranch.SetRetryCount (maxRetries);
+		public override void SetMaxRetries(int maxRetries)
+		{
+			NativeBranch.SetRetryCount(maxRetries);
 		}
 
-		public override void SetNetworkTimeout (int timeout) {
-			NativeBranch.SetNetworkTimeout (timeout);
+		public override void SetNetworkTimeout(int timeout)
+		{
+			NativeBranch.SetNetworkTimeout(timeout);
 		}
 
-		public override void RegisterView (BranchUniversalObject universalObject) {
+		public override void RegisterView(BranchUniversalObject universalObject)
+		{
 			IO.Branch.Indexing.BranchUniversalObject resBuo = BranchAndroidUtils.ToNativeBUO(universalObject);
-            NativeBranch.RegisterView(resBuo, null);
+			NativeBranch.RegisterView(resBuo, null);
 		}
 
-		public override void ListOnSpotlight(BranchUniversalObject universalObject) {
+		public override void ListOnSpotlight(BranchUniversalObject universalObject)
+		{
 			IO.Branch.Indexing.BranchUniversalObject resBuo = BranchAndroidUtils.ToNativeBUO(universalObject);
-			resBuo.ListOnGoogleSearch(appContext);
+			resBuo.SetContentIndexingMode(IO.Branch.Indexing.BranchUniversalObject.CONTENT_INDEX_MODE.Public);
 		}
 
-		public override void SetRequestMetadata(string key, string value) {
-			if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value)) {
+		public override void SetRequestMetadata(string key, string value)
+		{
+			if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+			{
 				NativeBranch.SetRequestMetadata(key, value);
 			}
 		}
 
-		public override void SetTrackingDisabled(bool value) {
+		public override void SetTrackingDisabled(bool value)
+		{
 			NativeBranch.DisableTracking(value);
+		}
+
+		public override void SetDMAParamsForEEA(bool eeaRegion, bool adPersonalizationConsent, bool adUserDataUsageConsent)
+		{
+			NativeBranch.SetDMAParamsForEEA(eeaRegion, adPersonalizationConsent, adUserDataUsageConsent);
+		}
+
+		#endregion
+
+		#region Consumer Protection methods
+
+		public override void setConsumerProtectionAttributionLevel(BranchAttributionLevel level)
+		{
+			NativeBranch.SetConsumerProtectionAttributionLevel(level);
 		}
 
 		#endregion

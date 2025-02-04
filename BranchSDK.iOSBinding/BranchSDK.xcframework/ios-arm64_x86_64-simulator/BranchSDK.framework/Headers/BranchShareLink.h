@@ -6,6 +6,8 @@
 //  Copyright © 2017 Branch Metrics. All rights reserved.
 //
 
+#if !TARGET_OS_TV
+
 #import "BranchUniversalObject.h"
 #import <LinkPresentation/LinkPresentation.h>
 @class BranchShareLink;
@@ -93,7 +95,7 @@ Presents a UIActivityViewController that shares the Branch link.
 @property (nonatomic, strong, nullable) NSURL *placeholderURL;
 
 // iOS 13+ : LinkPresentation metadata for the preview header.
-@property (nonatomic, strong, nullable) LPLinkMetadata *lpMetaData API_AVAILABLE(ios(13.0));
+@property (nonatomic, strong, nullable) LPLinkMetadata *lpMetaData API_AVAILABLE(ios(13.0), macCatalyst(13.1));
 
 ///Share text for the item.  This is not the text in the iOS 13+ preview header.
 ///This text can be changed later when the `branchShareSheetWillShare:` delegate method is called.
@@ -125,7 +127,6 @@ Presents a UIActivityViewController that shares the Branch link.
 ///The delegate. See 'BranchShareLinkDelegate' above for a description.
 @property (nonatomic, weak)   id<BranchShareLinkDelegate>_Nullable delegate;
 
-@property void (^ _Nullable completion)(NSString * _Nullable activityType, BOOL completed);
 @property void (^ _Nullable completionError)(NSString * _Nullable activityType, BOOL completed, NSError*_Nullable error);
 
 /**
@@ -135,7 +136,7 @@ Creates and attaches an LPLinkMetadata using the provided title and icon. This m
 @param icon             The image used for the share sheet preview icon.
 */
 
-- (void) addLPLinkMetadata:(NSString *_Nullable)title
-                      icon:(UIImage *_Nullable)icon API_AVAILABLE(ios(13.0));
+- (void) addLPLinkMetadata:(NSString *_Nullable)title icon:(UIImage *_Nullable)icon API_AVAILABLE(ios(13.0), macCatalyst(13.1));
 
 @end
+#endif

@@ -66,7 +66,7 @@ namespace BranchSDK.iOS
             }
 
             NSError error = null;
-            NSData jsonData = NSJsonSerialization.Serialize(universalObject.ContentMetadata.Dictionary(), 0, out error);
+            NSData jsonData = NSJsonSerialization.Serialize(universalObject.ContentMetadata.Dictionary, 0, out error);
 
             string jsonStr = jsonData.ToString();
             Dictionary<string, object> metadataDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonStr);

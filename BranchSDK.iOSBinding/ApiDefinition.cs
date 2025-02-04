@@ -6,74 +6,9 @@ using CoreSpotlight;
 using ObjCRuntime;
 using UIKit;
 
-namespace IOSNativeBranch {
-
-    // The first step to creating a binding is to add your native framework ("MyLibrary.xcframework")
-    // to the project.
-    // Open your binding csproj and add a section like this
-    // <ItemGroup>
-    //   <NativeReference Include="MyLibrary.xcframework">
-    //     <Kind>Framework</Kind>
-    //     <Frameworks></Frameworks>
-    //   </NativeReference>
-    // </ItemGroup>
-    //
-    // Once you've added it, you will need to customize it for your specific library:
-    //  - Change the Include to the correct path/name of your library
-    //  - Change Kind to Static (.a) or Framework (.framework/.xcframework) based upon the library kind and extension.
-    //    - Dynamic (.dylib) is a third option but rarely if ever valid, and only on macOS and Mac Catalyst
-    //  - If your library depends on other frameworks, add them inside <Frameworks></Frameworks>
-    // Example:
-    // <NativeReference Include="libs\MyTestFramework.xcframework">
-    //   <Kind>Framework</Kind>
-    //   <Frameworks>CoreLocation ModelIO</Frameworks>
-    // </NativeReference>
-    // 
-    // Once you've done that, you're ready to move on to binding the API...
-    //
-    // Here is where you'd define your API definition for the native Objective-C library.
-    //
-    // For example, to bind the following Objective-C class:
-    //
-    //     @interface Widget : NSObject {
-    //     }
-    //
-    // The C# binding would look like this:
-    //
-    //     [BaseType (typeof (NSObject))]
-    //     interface Widget {
-    //     }
-    //
-    // To bind Objective-C properties, such as:
-    //
-    //     @property (nonatomic, readwrite, assign) CGPoint center;
-    //
-    // You would add a property definition in the C# interface like so:
-    //
-    //     [Export ("center")]
-    //     CGPoint Center { get; set; }
-    //
-    // To bind an Objective-C method, such as:
-    //
-    //     -(void) doSomething:(NSObject *)object atIndex:(NSInteger)index;
-    //
-    // You would add a method definition to the C# interface like so:
-    //
-    //     [Export ("doSomething:atIndex:")]
-    //     void DoSomething (NSObject object, nint index);
-    //
-    // Objective-C "constructors" such as:
-    //
-    //     -(id)initWithElmo:(ElmoMuppet *)elmo;
-    //
-    // Can be bound as:
-    //
-    //     [Export ("initWithElmo:")]
-    //     NativeHandle Constructor (ElmoMuppet elmo);
-    //
-    // For more information, see https://aka.ms/ios-binding
-    //
-
+namespace IOSNativeBranch
+{
+    //Updated
     // typedef void (^callbackWithParams)(NSDictionary * _Nullable, NSError * _Nullable);
     delegate void callbackWithParams([NullAllowed] NSDictionary arg0, [NullAllowed] NSError arg1);
 
@@ -92,86 +27,109 @@ namespace IOSNativeBranch {
     // typedef void (^callbackWithBranchUniversalObject)(BranchUniversalObject * _Nullable, BranchLinkProperties * _Nullable, NSError * _Nullable);
     delegate void callbackWithBranchUniversalObject([NullAllowed] BranchUniversalObject arg0, [NullAllowed] BranchLinkProperties arg1, [NullAllowed] NSError arg2);
 
+    // typedef void (^callbackWithData)(NSData * _Nullable, NSError * _Nullable);
+    delegate void callbackWithData([NullAllowed] NSData arg0, [NullAllowed] NSError arg1);
+
     // @interface BNCServerResponse : NSObject
     [BaseType(typeof(NSObject))]
     interface BNCServerResponse
     {
-        // @property (nonatomic, strong) NSNumber * statusCode;
+        // @property (nonatomic, strong) NSNumber * _Nonnull statusCode;
         [Export("statusCode", ArgumentSemantic.Strong)]
         NSNumber StatusCode { get; set; }
 
-        // @property (nonatomic, strong) id data;
-        [Export("data", ArgumentSemantic.Strong)]
+        // @property (nonatomic, strong) id _Nullable data;
+        [NullAllowed, Export("data", ArgumentSemantic.Strong)]
         NSObject Data { get; set; }
+
+        // @property (copy, nonatomic) NSString * _Nullable requestId;
+        [NullAllowed, Export("requestId")]
+        string RequestId { get; set; }
     }
 
     // @interface BNCPreferenceHelper : NSObject
     [BaseType(typeof(NSObject))]
     interface BNCPreferenceHelper
     {
-        // @property (nonatomic, strong) NSString * lastRunBranchKey;
-        [Export("lastRunBranchKey", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * lastRunBranchKey;
+        [Export("lastRunBranchKey")]
         string LastRunBranchKey { get; set; }
 
         // @property (nonatomic, strong) NSDate * lastStrongMatchDate;
         [Export("lastStrongMatchDate", ArgumentSemantic.Strong)]
         NSDate LastStrongMatchDate { get; set; }
 
-        // @property (nonatomic, strong) NSString * appVersion;
-        [Export("appVersion", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * appVersion;
+        [Export("appVersion")]
         string AppVersion { get; set; }
 
-        // @property (nonatomic, strong) NSString * deviceFingerprintID;
-        [Export("deviceFingerprintID", ArgumentSemantic.Strong)]
-        string DeviceFingerprintID { get; set; }
+        // @property (copy, nonatomic) NSString * randomizedDeviceToken;
+        [Export("randomizedDeviceToken")]
+        string RandomizedDeviceToken { get; set; }
 
-        // @property (nonatomic, strong) NSString * sessionID;
-        [Export("sessionID", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * randomizedBundleToken;
+        [Export("randomizedBundleToken")]
+        string RandomizedBundleToken { get; set; }
+
+        // @property (copy, nonatomic) NSString * anonID;
+        [Export("anonID")]
+        string AnonID { get; set; }
+
+        // @property (copy, nonatomic) NSString * sessionID;
+        [Export("sessionID")]
         string SessionID { get; set; }
 
-        // @property (nonatomic, strong) NSString * identityID;
-        [Export("identityID", ArgumentSemantic.Strong)]
-        string IdentityID { get; set; }
-
-        // @property (nonatomic, strong) NSString * linkClickIdentifier;
-        [Export("linkClickIdentifier", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * linkClickIdentifier;
+        [Export("linkClickIdentifier")]
         string LinkClickIdentifier { get; set; }
 
-        // @property (nonatomic, strong) NSString * spotlightIdentifier;
-        [Export("spotlightIdentifier", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * spotlightIdentifier;
+        [Export("spotlightIdentifier")]
         string SpotlightIdentifier { get; set; }
 
-        // @property (atomic, strong) NSString * universalLinkUrl;
-        [Export("universalLinkUrl", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * universalLinkUrl;
+        [Export("universalLinkUrl")]
         string UniversalLinkUrl { get; set; }
 
-        // @property (nonatomic, strong) NSString * userUrl;
-        [Export("userUrl", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * initialReferrer;
+        [Export("initialReferrer")]
+        string InitialReferrer { get; set; }
+
+        // @property (copy, nonatomic) NSString * userUrl;
+        [Export("userUrl")]
         string UserUrl { get; set; }
 
-        // @property (nonatomic, strong) NSString * userIdentity;
-        [Export("userIdentity", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * localUrl;
+        [Export("localUrl")]
+        string LocalUrl { get; set; }
+
+        // @property (copy, nonatomic) NSString * userIdentity;
+        [Export("userIdentity")]
         string UserIdentity { get; set; }
 
-        // @property (nonatomic, strong) NSString * sessionParams;
-        [Export("sessionParams", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * sessionParams;
+        [Export("sessionParams")]
         string SessionParams { get; set; }
 
-        // @property (nonatomic, strong) NSString * installParams;
-        [Export("installParams", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * installParams;
+        [Export("installParams")]
         string InstallParams { get; set; }
 
         // @property (assign, nonatomic) BOOL isDebug;
         [Export("isDebug")]
         bool IsDebug { get; set; }
 
-        // @property (assign, nonatomic) BOOL checkedFacebookAppLinks;
-        [Export("checkedFacebookAppLinks")]
-        bool CheckedFacebookAppLinks { get; set; }
+        // @property (assign, readwrite, nonatomic) BOOL appleAttributionTokenChecked;
+        [Export("appleAttributionTokenChecked")]
+        bool AppleAttributionTokenChecked { get; set; }
 
-        // @property (assign, nonatomic) BOOL checkedAppleSearchAdAttribution;
-        [Export("checkedAppleSearchAdAttribution")]
-        bool CheckedAppleSearchAdAttribution { get; set; }
+        // @property (assign, readwrite, nonatomic) BOOL hasOptedInBefore;
+        [Export("hasOptedInBefore")]
+        bool HasOptedInBefore { get; set; }
+
+        // @property (assign, readwrite, nonatomic) BOOL hasCalledHandleATTAuthorizationStatus;
+        [Export("hasCalledHandleATTAuthorizationStatus")]
+        bool HasCalledHandleATTAuthorizationStatus { get; set; }
 
         // @property (assign, nonatomic) NSInteger retryCount;
         [Export("retryCount")]
@@ -185,105 +143,121 @@ namespace IOSNativeBranch {
         [Export("timeout")]
         double Timeout { get; set; }
 
-        // @property (atomic, strong) NSString * externalIntentURI;
-        [Export("externalIntentURI", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * externalIntentURI;
+        [Export("externalIntentURI")]
         string ExternalIntentURI { get; set; }
 
         // @property (nonatomic, strong) NSMutableDictionary * savedAnalyticsData;
         [Export("savedAnalyticsData", ArgumentSemantic.Strong)]
         NSMutableDictionary SavedAnalyticsData { get; set; }
 
-        // @property (nonatomic, strong) NSDictionary * appleSearchAdDetails;
-        [Export("appleSearchAdDetails", ArgumentSemantic.Strong)]
-        NSDictionary AppleSearchAdDetails { get; set; }
-
-        // @property (assign, nonatomic) BOOL appleSearchAdNeedsSend;
-        [Export("appleSearchAdNeedsSend")]
-        bool AppleSearchAdNeedsSend { get; set; }
-
-        // @property (nonatomic, strong) NSString * lastSystemBuildVersion;
-        [Export("lastSystemBuildVersion", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * lastSystemBuildVersion;
+        [Export("lastSystemBuildVersion")]
         string LastSystemBuildVersion { get; set; }
 
-        // @property (nonatomic, strong) NSString * browserUserAgentString;
-        [Export("browserUserAgentString", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * browserUserAgentString;
+        [Export("browserUserAgentString")]
         string BrowserUserAgentString { get; set; }
 
-        // @property (atomic, strong) NSString * referringURL;
-        [Export("referringURL", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * referringURL;
+        [Export("referringURL")]
         string ReferringURL { get; set; }
 
-        // @property (atomic, strong) NSString * branchAPIURL;
-        [Export("branchAPIURL", ArgumentSemantic.Strong)]
-        string BranchAPIURL { get; set; }
-
-        // @property (readwrite, nonatomic, strong) NSString * branchBlacklistURL;
-        [Export("branchBlacklistURL", ArgumentSemantic.Strong)]
-        string BranchBlacklistURL { get; set; }
-
-        // @property (assign, atomic) BOOL limitFacebookTracking;
+        // @property (assign, nonatomic) BOOL limitFacebookTracking;
         [Export("limitFacebookTracking")]
         bool LimitFacebookTracking { get; set; }
 
-        // @property (atomic, strong) NSDate * previousAppBuildDate;
+        // @property (nonatomic, strong) NSDate * previousAppBuildDate;
         [Export("previousAppBuildDate", ArgumentSemantic.Strong)]
         NSDate PreviousAppBuildDate { get; set; }
 
-        // @property (readwrite, nonatomic, strong) NSURL * faceBookAppLink;
-        [Export("faceBookAppLink", ArgumentSemantic.Strong)]
-        NSUrl FaceBookAppLink { get; set; }
+        // @property (assign, readwrite, nonatomic) BOOL disableAdNetworkCallouts;
+        [Export("disableAdNetworkCallouts")]
+        bool DisableAdNetworkCallouts { get; set; }
 
-        // @property (atomic, strong) NSArray<NSString *> * URLBlackList;
-        [Export("URLBlackList", ArgumentSemantic.Strong)]
-        string[] URLBlackList { get; set; }
+        // @property (readwrite, copy, nonatomic) NSString * patternListURL;
+        [Export("patternListURL")]
+        string PatternListURL { get; set; }
 
-        // @property (assign, atomic) NSInteger URLBlackListVersion;
-        [Export("URLBlackListVersion")]
-        nint URLBlackListVersion { get; set; }
+        // @property (nonatomic, strong) NSArray<NSString *> * savedURLPatternList;
+        [Export("savedURLPatternList", ArgumentSemantic.Strong)]
+        string[] SavedURLPatternList { get; set; }
 
-        // @property (assign, atomic) BOOL blacklistURLOpen;
-        [Export("blacklistURLOpen")]
-        bool BlacklistURLOpen { get; set; }
+        // @property (assign, nonatomic) NSInteger savedURLPatternListVersion;
+        [Export("savedURLPatternListVersion")]
+        nint SavedURLPatternListVersion { get; set; }
 
-        // @property (assign, atomic) BOOL trackingDisabled;
+        // @property (assign, nonatomic) BOOL dropURLOpen;
+        [Export("dropURLOpen")]
+        bool DropURLOpen { get; set; }
+
+        // @property (assign, nonatomic) BOOL trackingDisabled;
         [Export("trackingDisabled")]
         bool TrackingDisabled { get; set; }
+
+        // @property (copy, nonatomic) NSString * referrerGBRAID;
+        [Export("referrerGBRAID")]
+        string ReferrerGBRAID { get; set; }
+
+        // @property (assign, nonatomic) NSTimeInterval referrerGBRAIDValidityWindow;
+        [Export("referrerGBRAIDValidityWindow")]
+        double ReferrerGBRAIDValidityWindow { get; set; }
+
+        // @property (nonatomic, strong) NSDate * referrerGBRAIDInitDate;
+        [Export("referrerGBRAIDInitDate", ArgumentSemantic.Strong)]
+        NSDate ReferrerGBRAIDInitDate { get; set; }
+
+        // @property (nonatomic, strong) NSMutableDictionary * referringURLQueryParameters;
+        [Export("referringURLQueryParameters", ArgumentSemantic.Strong)]
+        NSMutableDictionary ReferringURLQueryParameters { get; set; }
+
+        // @property (assign, nonatomic) NSInteger skanCurrentWindow;
+        [Export("skanCurrentWindow")]
+        nint SkanCurrentWindow { get; set; }
+
+        // @property (assign, nonatomic) NSInteger highestConversionValueSent;
+        [Export("highestConversionValueSent")]
+        nint HighestConversionValueSent { get; set; }
+
+        // @property (nonatomic, strong) NSDate * firstAppLaunchTime;
+        [Export("firstAppLaunchTime", ArgumentSemantic.Strong)]
+        NSDate FirstAppLaunchTime { get; set; }
+
+        // @property (assign, nonatomic) BOOL invokeRegisterApp;
+        [Export("invokeRegisterApp")]
+        bool InvokeRegisterApp { get; set; }
+
+        // @property (assign, nonatomic) BOOL eeaRegion;
+        [Export("eeaRegion")]
+        bool EeaRegion { get; set; }
+
+        // @property (assign, nonatomic) BOOL adPersonalizationConsent;
+        [Export("adPersonalizationConsent")]
+        bool AdPersonalizationConsent { get; set; }
+
+        // @property (assign, nonatomic) BOOL adUserDataUsageConsent;
+        [Export("adUserDataUsageConsent")]
+        bool AdUserDataUsageConsent { get; set; }
+
+        // @property (assign, nonatomic) NSString * attributionLevel;
+        [Export("attributionLevel")]
+        string AttributionLevel { get; set; }
 
         // -(void)clearTrackingInformation;
         [Export("clearTrackingInformation")]
         void ClearTrackingInformation();
 
-        // +(BNCPreferenceHelper *)preferenceHelper;
+        // +(BNCPreferenceHelper *)sharedInstance;
         [Static]
-        [Export("preferenceHelper")]
-        //[Verify(MethodToProperty)]
-        BNCPreferenceHelper PreferenceHelper { get; }
-
-        // -(NSString *)getAPIBaseURL;
-        [Export("getAPIBaseURL")]
-        //[Verify(MethodToProperty)]
-        string APIBaseURL { get; }
-
-        // -(NSString *)getAPIURL:(NSString *)endpoint;
-        [Export("getAPIURL:")]
-        string GetAPIURL(string endpoint);
-
-        // -(NSString *)getEndpointFromURL:(NSString *)url;
-        [Export("getEndpointFromURL:")]
-        string GetEndpointFromURL(string url);
-
-        // -(id)getBranchUniversalLinkDomains;
-        [Export("getBranchUniversalLinkDomains")]
-        //[Verify(MethodToProperty)]
-        NSObject BranchUniversalLinkDomains { get; }
+        [Export("sharedInstance")]
+        BNCPreferenceHelper SharedInstance { get; }
 
         // -(void)setRequestMetadataKey:(NSString *)key value:(NSObject *)value;
         [Export("setRequestMetadataKey:value:")]
-        void SetRequestMetadataKey(string key, NSObject value);
+        void SetRequestMetadataKey(string key, string value);
 
         // -(NSMutableDictionary *)requestMetadataDictionary;
         [Export("requestMetadataDictionary")]
-        //[Verify(MethodToProperty)]
         NSMutableDictionary RequestMetadataDictionary { get; }
 
         // -(void)addInstrumentationDictionaryKey:(NSString *)key value:(NSString *)value;
@@ -292,8 +266,11 @@ namespace IOSNativeBranch {
 
         // -(NSMutableDictionary *)instrumentationDictionary;
         [Export("instrumentationDictionary")]
-        //[Verify(MethodToProperty)]
         NSMutableDictionary InstrumentationDictionary { get; }
+
+        // -(NSDictionary *)instrumentationParameters;
+        [Export("instrumentationParameters")]
+        NSDictionary InstrumentationParameters { get; }
 
         // -(void)clearInstrumentationDictionary;
         [Export("clearInstrumentationDictionary")]
@@ -309,12 +286,10 @@ namespace IOSNativeBranch {
 
         // -(NSMutableDictionary *)getBranchAnalyticsData;
         [Export("getBranchAnalyticsData")]
-        //[Verify(MethodToProperty)]
         NSMutableDictionary BranchAnalyticsData { get; }
 
         // -(NSDictionary *)getContentAnalyticsManifest;
         [Export("getContentAnalyticsManifest")]
-        //[Verify(MethodToProperty)]
         NSDictionary ContentAnalyticsManifest { get; }
 
         // -(void)saveContentAnalyticsManifest:(NSDictionary *)cdManifest;
@@ -333,106 +308,114 @@ namespace IOSNativeBranch {
         [Static]
         [Export("clearAll")]
         void ClearAll();
+
+        // -(BOOL)eeaRegionInitialized;
+        [Export("eeaRegionInitialized")]
+        bool EeaRegionInitialized { get; }
+
+        // -(BOOL)attributionLevelInitialized;
+        [Export("attributionLevelInitialized")]
+        // [Verify(MethodToProperty)]
+        bool AttributionLevelInitialized { get; }
     }
 
-    //// @protocol BNCNetworkOperationProtocol <NSObject>
-    ///*
-    //  Check whether adding [Model] to this declaration is appropriate.
-    //  [Model] is used to generate a C# class that implements this protocol,
-    //  and might be useful for protocols that consumers are supposed to implement,
-    //  since consumers can subclass the generated class instead of implementing
-    //  the generated interface. If consumers are not supposed to implement this
-    //  protocol, then [Model] is redundant and will generate code that will never
-    //  be used.
-    //*/
-    //[Protocol]
-    //[BaseType(typeof(NSObject))]
-    //interface BNCNetworkOperationProtocol
-    //{
-    //    // @required @property (readonly, copy) NSURLRequest * request;
-    //    [Abstract]
-    //    [Export("request", ArgumentSemantic.Copy)]
-    //    NSUrlRequest Request { get; }
+    // @protocol BNCNetworkOperationProtocol <NSObject>
+    /*
+    Check whether adding [Model] to this declaration is appropriate.
+    [Model] is used to generate a C# class that implements this protocol,
+    and might be useful for protocols that consumers are supposed to implement,
+    since consumers can subclass the generated class instead of implementing
+    the generated interface. If consumers are not supposed to implement this
+    protocol, then [Model] is redundant and will generate code that will never
+    be used.
+    */
+    // [Protocol]
+    // [BaseType(typeof(NSObject))]
+    // interface BNCNetworkOperationProtocol
+    // {
+    //     // @required @property (readonly, copy, nonatomic) NSURLRequest * request;
+    //     [Abstract]
+    //     [Export("request", ArgumentSemantic.Copy)]
+    //     NSUrlRequest Request { get; }
 
-    //    // @required @property (readonly, copy) NSHTTPURLResponse * response;
-    //    [Abstract]
-    //    [Export("response", ArgumentSemantic.Copy)]
-    //    NSHttpUrlResponse Response { get; }
+    //     // @required @property (readonly, copy, nonatomic) NSHTTPURLResponse * response;
+    //     [Abstract]
+    //     [Export("response", ArgumentSemantic.Copy)]
+    //     NSHttpUrlResponse Response { get; }
 
-    //    // @required @property (readonly, strong) NSData * responseData;
-    //    [Abstract]
-    //    [Export("responseData", ArgumentSemantic.Strong)]
-    //    NSData ResponseData { get; }
+    //     // @required @property (readonly, nonatomic, strong) NSData * responseData;
+    //     [Abstract]
+    //     [Export("responseData", ArgumentSemantic.Strong)]
+    //     NSData ResponseData { get; }
 
-    //    // @required @property (readonly, copy) NSError * error;
-    //    [Abstract]
-    //    [Export("error", ArgumentSemantic.Copy)]
-    //    NSError Error { get; }
+    //     // @required @property (readonly, copy, nonatomic) NSError * error;
+    //     [Abstract]
+    //     [Export("error", ArgumentSemantic.Copy)]
+    //     NSError Error { get; }
 
-    //    // @required @property (readonly, copy) NSDate * startDate;
-    //    [Abstract]
-    //    [Export("startDate", ArgumentSemantic.Copy)]
-    //    NSDate StartDate { get; }
+    //     // @required @property (readonly, copy, nonatomic) NSDate * startDate;
+    //     [Abstract]
+    //     [Export("startDate", ArgumentSemantic.Copy)]
+    //     NSDate StartDate { get; }
 
-    //    // @required @property (readonly, copy) NSDate * timeoutDate;
-    //    [Abstract]
-    //    [Export("timeoutDate", ArgumentSemantic.Copy)]
-    //    NSDate TimeoutDate { get; }
+    //     // @required @property (readonly, copy, nonatomic) NSDate * timeoutDate;
+    //     [Abstract]
+    //     [Export("timeoutDate", ArgumentSemantic.Copy)]
+    //     NSDate TimeoutDate { get; }
 
-    //    // @required @property (strong) NSDictionary * userInfo;
-    //    [Abstract]
-    //    [Export("userInfo", ArgumentSemantic.Strong)]
-    //    NSDictionary UserInfo { get; set; }
+    //     // @required @property (nonatomic, strong) NSDictionary * userInfo;
+    //     [Abstract]
+    //     [Export("userInfo", ArgumentSemantic.Strong)]
+    //     NSDictionary UserInfo { get; set; }
 
-    //    // @required -(void)start;
-    //    [Abstract]
-    //    [Export("start")]
-    //    void Start();
+    //     // @required -(void)start;
+    //     [Abstract]
+    //     [Export("start")]
+    //     void Start();
 
-    //    // @optional -(void)cancel;
-    //    [Export("cancel")]
-    //    void Cancel();
-    //}
+    //     // @optional -(void)cancel;
+    //     [Export("cancel")]
+    //     void Cancel();
+    // }
 
-    //// @protocol BNCNetworkServiceProtocol <NSObject>
-    ///*
-    //  Check whether adding [Model] to this declaration is appropriate.
-    //  [Model] is used to generate a C# class that implements this protocol,
-    //  and might be useful for protocols that consumers are supposed to implement,
-    //  since consumers can subclass the generated class instead of implementing
-    //  the generated interface. If consumers are not supposed to implement this
-    //  protocol, then [Model] is redundant and will generate code that will never
-    //  be used.
-    //*/
-    //[Protocol]
-    //[BaseType(typeof(NSObject))]
-    //interface BNCNetworkServiceProtocol
-    //{
-    //    // @required +(id<BNCNetworkServiceProtocol>)new;
-    //    [Static, Abstract]
-    //    [Export("new")]
-    //    //[Verify(MethodToProperty)]
-    //    BNCNetworkServiceProtocol New { get; }
+    //Updated
+    // @protocol BNCNetworkServiceProtocol <NSObject>
+    /*
+  Check whether adding [Model] to this declaration is appropriate.
+  [Model] is used to generate a C# class that implements this protocol,
+  and might be useful for protocols that consumers are supposed to implement,
+  since consumers can subclass the generated class instead of implementing
+  the generated interface. If consumers are not supposed to implement this
+  protocol, then [Model] is redundant and will generate code that will never
+  be used.
+*/
+    // [Protocol]
+    // [BaseType(typeof(NSObject))]
+    // interface BNCNetworkServiceProtocol
+    // {
+    //     // @required +(id<BNCNetworkServiceProtocol>)new;
+    //     [Static, Abstract]
+    //     [Export("new")]
+    //     BNCNetworkServiceProtocol New { get; }
 
-    //    // @optional -(void)cancelAllOperations;
-    //    [Export("cancelAllOperations")]
-    //    void CancelAllOperations();
+    //     // @optional -(void)cancelAllOperations;
+    //     [Export("cancelAllOperations")]
+    //     void CancelAllOperations();
 
-    //    // @required -(id<BNCNetworkOperationProtocol>)networkOperationWithURLRequest:(NSMutableURLRequest *)request completion:(void (^)(id<BNCNetworkOperationProtocol>))completion;
-    //    [Abstract]
-    //    [Export("networkOperationWithURLRequest:completion:")]
-    //    BNCNetworkOperationProtocol NetworkOperationWithURLRequest(NSMutableUrlRequest request, Action<BNCNetworkOperationProtocol> completion);
+    //     // @required -(id<BNCNetworkOperationProtocol>)networkOperationWithURLRequest:(NSMutableURLRequest *)request completion:(void (^)(id<BNCNetworkOperationProtocol>))completion;
+    //     [Abstract]
+    //     [Export("networkOperationWithURLRequest:completion:")]
+    //     BNCNetworkOperationProtocol NetworkOperationWithURLRequest(NSMutableUrlRequest request, Action<BNCNetworkOperationProtocol> completion);
 
-    //    // @required @property (strong) NSDictionary * userInfo;
-    //    [Abstract]
-    //    [Export("userInfo", ArgumentSemantic.Strong)]
-    //    NSDictionary UserInfo { get; set; }
+    //     // @required @property (nonatomic, strong) NSDictionary * userInfo;
+    //     [Abstract]
+    //     [Export("userInfo", ArgumentSemantic.Strong)]
+    //     NSDictionary UserInfo { get; set; }
 
-    //    // @optional -(NSError *)pinSessionToPublicSecKeyRefs:(NSArray *)publicKeys;
-    //    [Export("pinSessionToPublicSecKeyRefs:")]
-    //    //[Verify(StronglyTypedNSArray)]
-    //    NSError PinSessionToPublicSecKeyRefs(NSObject[] publicKeys);
-    //}
+    //     // @optional -(NSError *)pinSessionToPublicSecKeyRefs:(NSArray *)publicKeys __attribute__((deprecated("")));
+    //     [Export("pinSessionToPublicSecKeyRefs:")]
+    //     NSError PinSessionToPublicSecKeyRefs(NSObject[] publicKeys);
+    // }
 
     // typedef void (^BNCServerCallback)(BNCServerResponse *, NSError *);
     delegate void BNCServerCallback(BNCServerResponse arg0, NSError arg1);
@@ -453,9 +436,9 @@ namespace IOSNativeBranch {
         [Export("postRequest:url:key:callback:")]
         void PostRequest(NSDictionary post, string url, string key, BNCServerCallback callback);
 
-        //// -(void)genericHTTPRequest:(NSURLRequest *)request retryNumber:(NSInteger)retryNumber callback:(BNCServerCallback)callback retryHandler:(NSURLRequest *(^)(NSInteger))retryHandler;
-        //[Export("genericHTTPRequest:retryNumber:callback:retryHandler:")]
-        //void GenericHTTPRequest(NSUrlRequest request, nint retryNumber, BNCServerCallback callback, Func<nint, NSURLRequest> retryHandler);
+        // // -(void)genericHTTPRequest:(NSURLRequest *)request retryNumber:(NSInteger)retryNumber callback:(BNCServerCallback)callback retryHandler:(NSURLRequest *(^)(NSInteger))retryHandler;
+        // [Export("genericHTTPRequest:retryNumber:callback:retryHandler:")]
+        // void GenericHTTPRequest(NSUrlRequest request, nint retryNumber, BNCServerCallback callback, Func<nint, NSURLRequest> retryHandler);
 
         // @property (nonatomic, strong) BNCPreferenceHelper * preferenceHelper;
         [Export("preferenceHelper", ArgumentSemantic.Strong)]
@@ -479,94 +462,9 @@ namespace IOSNativeBranch {
         void SafeSetValue(NSObject value, string key, NSMutableDictionary dict);
     }
 
-    //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
+    [Static]
     partial interface Constants
     {
-        // extern BNCProductCategory _Nonnull BNCProductCategoryAnimalSupplies;
-        [Field("BNCProductCategoryAnimalSupplies", "__Internal")]
-        NSString BNCProductCategoryAnimalSupplies { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryApparel;
-        [Field("BNCProductCategoryApparel", "__Internal")]
-        NSString BNCProductCategoryApparel { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryArtsEntertainment;
-        [Field("BNCProductCategoryArtsEntertainment", "__Internal")]
-        NSString BNCProductCategoryArtsEntertainment { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryBabyToddler;
-        [Field("BNCProductCategoryBabyToddler", "__Internal")]
-        NSString BNCProductCategoryBabyToddler { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryBusinessIndustrial;
-        [Field("BNCProductCategoryBusinessIndustrial", "__Internal")]
-        NSString BNCProductCategoryBusinessIndustrial { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryCamerasOptics;
-        [Field("BNCProductCategoryCamerasOptics", "__Internal")]
-        NSString BNCProductCategoryCamerasOptics { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryElectronics;
-        [Field("BNCProductCategoryElectronics", "__Internal")]
-        NSString BNCProductCategoryElectronics { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryFoodBeverageTobacco;
-        [Field("BNCProductCategoryFoodBeverageTobacco", "__Internal")]
-        NSString BNCProductCategoryFoodBeverageTobacco { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryFurniture;
-        [Field("BNCProductCategoryFurniture", "__Internal")]
-        NSString BNCProductCategoryFurniture { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryHardware;
-        [Field("BNCProductCategoryHardware", "__Internal")]
-        NSString BNCProductCategoryHardware { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryHealthBeauty;
-        [Field("BNCProductCategoryHealthBeauty", "__Internal")]
-        NSString BNCProductCategoryHealthBeauty { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryHomeGarden;
-        [Field("BNCProductCategoryHomeGarden", "__Internal")]
-        NSString BNCProductCategoryHomeGarden { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryLuggageBags;
-        [Field("BNCProductCategoryLuggageBags", "__Internal")]
-        NSString BNCProductCategoryLuggageBags { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryMature;
-        [Field("BNCProductCategoryMature", "__Internal")]
-        NSString BNCProductCategoryMature { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryMedia;
-        [Field("BNCProductCategoryMedia", "__Internal")]
-        NSString BNCProductCategoryMedia { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryOfficeSupplies;
-        [Field("BNCProductCategoryOfficeSupplies", "__Internal")]
-        NSString BNCProductCategoryOfficeSupplies { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryReligious;
-        [Field("BNCProductCategoryReligious", "__Internal")]
-        NSString BNCProductCategoryReligious { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategorySoftware;
-        [Field("BNCProductCategorySoftware", "__Internal")]
-        NSString BNCProductCategorySoftware { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategorySportingGoods;
-        [Field("BNCProductCategorySportingGoods", "__Internal")]
-        NSString BNCProductCategorySportingGoods { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryToysGames;
-        [Field("BNCProductCategoryToysGames", "__Internal")]
-        NSString BNCProductCategoryToysGames { get; }
-
-        // extern BNCProductCategory _Nonnull BNCProductCategoryVehiclesParts;
-        [Field("BNCProductCategoryVehiclesParts", "__Internal")]
-        NSString BNCProductCategoryVehiclesParts { get; }
-
         // extern BNCCurrency _Nonnull BNCCurrencyAED;
         [Field("BNCCurrencyAED", "__Internal")]
         NSString BNCCurrencyAED { get; }
@@ -1278,110 +1176,115 @@ namespace IOSNativeBranch {
         // extern BNCCurrency _Nonnull BNCCurrencyZMW;
         [Field("BNCCurrencyZMW", "__Internal")]
         NSString BNCCurrencyZMW { get; }
-    }
 
-    // @interface BNCProduct : NSObject
-    [BaseType(typeof(NSObject))]
-    interface BNCProduct
-    {
-        // @property (nonatomic, strong) NSString * _Nullable sku;
-        [NullAllowed, Export("sku", ArgumentSemantic.Strong)]
-        string Sku { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryAnimalSupplies;
+        [Field("BNCProductCategoryAnimalSupplies", "__Internal")]
+        NSString BNCProductCategoryAnimalSupplies { get; }
 
-        // @property (nonatomic, strong) NSString * _Nullable name;
-        [NullAllowed, Export("name", ArgumentSemantic.Strong)]
-        string Name { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryApparel;
+        [Field("BNCProductCategoryApparel", "__Internal")]
+        NSString BNCProductCategoryApparel { get; }
 
-        // @property (nonatomic, strong) NSDecimalNumber * _Nullable price;
-        [NullAllowed, Export("price", ArgumentSemantic.Strong)]
-        NSDecimalNumber Price { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryArtsEntertainment;
+        [Field("BNCProductCategoryArtsEntertainment", "__Internal")]
+        NSString BNCProductCategoryArtsEntertainment { get; }
 
-        // @property (nonatomic, strong) NSNumber * _Nullable quantity;
-        [NullAllowed, Export("quantity", ArgumentSemantic.Strong)]
-        NSNumber Quantity { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryBabyToddler;
+        [Field("BNCProductCategoryBabyToddler", "__Internal")]
+        NSString BNCProductCategoryBabyToddler { get; }
 
-        // @property (nonatomic, strong) NSString * _Nullable brand;
-        [NullAllowed, Export("brand", ArgumentSemantic.Strong)]
-        string Brand { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryBusinessIndustrial;
+        [Field("BNCProductCategoryBusinessIndustrial", "__Internal")]
+        NSString BNCProductCategoryBusinessIndustrial { get; }
 
-        // @property (nonatomic, strong) BNCProductCategory _Nullable category;
-        [NullAllowed, Export("category", ArgumentSemantic.Strong)]
-        string Category { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryCamerasOptics;
+        [Field("BNCProductCategoryCamerasOptics", "__Internal")]
+        NSString BNCProductCategoryCamerasOptics { get; }
 
-        // @property (nonatomic, strong) NSString * _Nullable variant;
-        [NullAllowed, Export("variant", ArgumentSemantic.Strong)]
-        string Variant { get; set; }
-    }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryElectronics;
+        [Field("BNCProductCategoryElectronics", "__Internal")]
+        NSString BNCProductCategoryElectronics { get; }
 
-    // @interface BNCCommerceEvent : NSObject
-    [BaseType(typeof(NSObject))]
-    interface BNCCommerceEvent
-    {
-        // @property (nonatomic, strong) NSDecimalNumber * _Nullable revenue;
-        [NullAllowed, Export("revenue", ArgumentSemantic.Strong)]
-        NSDecimalNumber Revenue { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryFoodBeverageTobacco;
+        [Field("BNCProductCategoryFoodBeverageTobacco", "__Internal")]
+        NSString BNCProductCategoryFoodBeverageTobacco { get; }
 
-        // @property (nonatomic, strong) BNCCurrency _Nullable currency;
-        [NullAllowed, Export("currency", ArgumentSemantic.Strong)]
-        string Currency { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryFurniture;
+        [Field("BNCProductCategoryFurniture", "__Internal")]
+        NSString BNCProductCategoryFurniture { get; }
 
-        // @property (nonatomic, strong) NSString * _Nullable transactionID;
-        [NullAllowed, Export("transactionID", ArgumentSemantic.Strong)]
-        string TransactionID { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryHardware;
+        [Field("BNCProductCategoryHardware", "__Internal")]
+        NSString BNCProductCategoryHardware { get; }
 
-        // @property (nonatomic, strong) NSDecimalNumber * _Nullable shipping;
-        [NullAllowed, Export("shipping", ArgumentSemantic.Strong)]
-        NSDecimalNumber Shipping { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryHealthBeauty;
+        [Field("BNCProductCategoryHealthBeauty", "__Internal")]
+        NSString BNCProductCategoryHealthBeauty { get; }
 
-        // @property (nonatomic, strong) NSDecimalNumber * _Nullable tax;
-        [NullAllowed, Export("tax", ArgumentSemantic.Strong)]
-        NSDecimalNumber Tax { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryHomeGarden;
+        [Field("BNCProductCategoryHomeGarden", "__Internal")]
+        NSString BNCProductCategoryHomeGarden { get; }
 
-        // @property (nonatomic, strong) NSString * _Nullable coupon;
-        [NullAllowed, Export("coupon", ArgumentSemantic.Strong)]
-        string Coupon { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryLuggageBags;
+        [Field("BNCProductCategoryLuggageBags", "__Internal")]
+        NSString BNCProductCategoryLuggageBags { get; }
 
-        // @property (nonatomic, strong) NSString * _Nullable affiliation;
-        [NullAllowed, Export("affiliation", ArgumentSemantic.Strong)]
-        string Affiliation { get; set; }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryMature;
+        [Field("BNCProductCategoryMature", "__Internal")]
+        NSString BNCProductCategoryMature { get; }
 
-        // @property (nonatomic, strong) NSArray<BNCProduct *> * _Nullable products;
-        [NullAllowed, Export("products", ArgumentSemantic.Strong)]
-        BNCProduct[] Products { get; set; }
-    }
+        // extern BNCProductCategory _Nonnull BNCProductCategoryMedia;
+        [Field("BNCProductCategoryMedia", "__Internal")]
+        NSString BNCProductCategoryMedia { get; }
 
-    // @interface BranchCommerceEventRequest : BNCServerRequest <NSSecureCoding>
-    [BaseType(typeof(BNCServerRequest))]
-    interface BranchCommerceEventRequest : INSSecureCoding
-    {
-        // -(instancetype _Nonnull)initWithCommerceEvent:(BNCCommerceEvent * _Nonnull)commerceEvent metadata:(NSDictionary * _Nullable)dictionary completion:(void (^ _Nullable)(NSDictionary * _Nullable, NSError * _Nullable))callBack;
-        [Export("initWithCommerceEvent:metadata:completion:")]
-        IntPtr Constructor(BNCCommerceEvent commerceEvent, [NullAllowed] NSDictionary dictionary, [NullAllowed] Action<NSDictionary, NSError> callBack);
+        // extern BNCProductCategory _Nonnull BNCProductCategoryOfficeSupplies;
+        [Field("BNCProductCategoryOfficeSupplies", "__Internal")]
+        NSString BNCProductCategoryOfficeSupplies { get; }
+
+        // extern BNCProductCategory _Nonnull BNCProductCategoryReligious;
+        [Field("BNCProductCategoryReligious", "__Internal")]
+        NSString BNCProductCategoryReligious { get; }
+
+        // extern BNCProductCategory _Nonnull BNCProductCategorySoftware;
+        [Field("BNCProductCategorySoftware", "__Internal")]
+        NSString BNCProductCategorySoftware { get; }
+
+        // extern BNCProductCategory _Nonnull BNCProductCategorySportingGoods;
+        [Field("BNCProductCategorySportingGoods", "__Internal")]
+        NSString BNCProductCategorySportingGoods { get; }
+
+        // extern BNCProductCategory _Nonnull BNCProductCategoryToysGames;
+        [Field("BNCProductCategoryToysGames", "__Internal")]
+        NSString BNCProductCategoryToysGames { get; }
+
+        // extern BNCProductCategory _Nonnull BNCProductCategoryVehiclesParts;
+        [Field("BNCProductCategoryVehiclesParts", "__Internal")]
+        NSString BNCProductCategoryVehiclesParts { get; }
     }
 
     //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
     partial interface Constants
     {
-        // extern NSString *const _Nonnull BNC_SDK_VERSION;
         [Field("BNC_SDK_VERSION", "__Internal")]
         NSString BNC_SDK_VERSION { get; }
 
-        // extern NSString *const _Nonnull BNC_API_BASE_URL;
-        [Field("BNC_API_BASE_URL", "__Internal")]
-        NSString BNC_API_BASE_URL { get; }
-
-        // extern const BOOL BNC_API_PINNED;
-        [Field("BNC_API_PINNED", "__Internal")]
-        bool BNC_API_PINNED { get; }
-
-        // extern NSString *const _Nonnull BNC_API_VERSION;
-        [Field("BNC_API_VERSION", "__Internal")]
-        NSString BNC_API_VERSION { get; }
-
-        // extern NSString *const _Nonnull BNC_LINK_URL;
         [Field("BNC_LINK_URL", "__Internal")]
         NSString BNC_LINK_URL { get; }
+
+        [Field("BNC_CDN_URL", "__Internal")]
+        NSString BNC_CDN_URL { get; }
+
+        [Field("BNC_API_URL", "__Internal")]
+        NSString BNC_API_URL { get; }
+
+        [Field("BNC_SAFETRACK_API_URL", "__Internal")]
+        NSString BNC_SAFETRACK_API_URL { get; }
+
+        [Field("BNC_EU_API_URL", "__Internal")]
+        NSString BNC_EU_API_URL { get; }
+
+        [Field("BNC_SAFETRACK_EU_API_URL", "__Internal")]
+        NSString BNC_SAFETRACK_EU_API_URL { get; }
     }
 
     // @interface Branch (NSError)
@@ -1393,7 +1296,6 @@ namespace IOSNativeBranch {
         // +(NSString * _Nonnull)bncErrorDomain;
         [Static]
         [Export("bncErrorDomain")]
-        //[Verify(MethodToProperty)]
         string BncErrorDomain { get; }
 
         // +(NSError * _Nonnull)branchErrorWithCode:(BNCErrorCode)errorCode;
@@ -1413,6 +1315,7 @@ namespace IOSNativeBranch {
     }
 
     // @interface BNCLinkData : NSObject <NSSecureCoding>
+    // @interface BNCLinkData : NSObject <NSSecureCoding>
     [BaseType(typeof(NSObject))]
     interface BNCLinkData : INSSecureCoding
     {
@@ -1422,8 +1325,7 @@ namespace IOSNativeBranch {
 
         // -(void)setupTags:(NSArray *)tags;
         [Export("setupTags:")]
-        //[Verify(StronglyTypedNSArray)]
-        void SetupTags(NSObject[] tags);
+        void SetupTags(string[] tags);
 
         // -(void)setupAlias:(NSString *)alias;
         [Export("setupAlias:")]
@@ -1489,12 +1391,10 @@ namespace IOSNativeBranch {
 
         // -(BNCServerRequest *)dequeue;
         [Export("dequeue")]
-        //[Verify(MethodToProperty)]
         BNCServerRequest Dequeue { get; }
 
         // -(BNCServerRequest *)peek;
         [Export("peek")]
-        //[Verify(MethodToProperty)]
         BNCServerRequest Peek { get; }
 
         // -(BNCServerRequest *)peekAt:(NSUInteger)index;
@@ -1513,50 +1413,26 @@ namespace IOSNativeBranch {
         [Export("remove:")]
         void Remove(BNCServerRequest request);
 
-        // -(void)persistEventually;
-        [Export("persistEventually")]
-        void PersistEventually();
-
-        // -(void)persistImmediately;
-        [Export("persistImmediately")]
-        void PersistImmediately();
-
         // -(void)clearQueue;
         [Export("clearQueue")]
         void ClearQueue();
 
+        // -(NSInteger)queueDepth;
+        [Export("queueDepth")]
+        nint QueueDepth { get; }
+
         // -(BOOL)containsInstallOrOpen;
         [Export("containsInstallOrOpen")]
-        //[Verify(MethodToProperty)]
         bool ContainsInstallOrOpen { get; }
 
-        // -(BOOL)removeInstallOrOpen;
-        [Export("removeInstallOrOpen")]
-        //[Verify(MethodToProperty)]
-        bool RemoveInstallOrOpen { get; }
-
-        // -(BOOL)containsClose;
-        [Export("containsClose")]
-        //[Verify(MethodToProperty)]
-        bool ContainsClose { get; }
-
-        //// -(BranchOpenRequest *)moveInstallOrOpenToFront:(NSInteger)networkCount;
-        //[Export("moveInstallOrOpenToFront:")]
-        //BranchOpenRequest MoveInstallOrOpenToFront(nint networkCount);
+        // -(BranchOpenRequest *)findExistingInstallOrOpen;
+        // [Export("findExistingInstallOrOpen")]
+        // BranchOpenRequest FindExistingInstallOrOpen { get; }
 
         // +(id)getInstance;
         [Static]
         [Export("getInstance")]
-        //[Verify(MethodToProperty)]
         NSObject Instance { get; }
-
-        // @property (readonly, assign, atomic) NSInteger queueDepth;
-        [Export("queueDepth")]
-        nint QueueDepth { get; }
-
-        // @property (readonly, assign, atomic) BOOL isDirty;
-        [Export("isDirty")]
-        bool IsDirty { get; }
     }
 
     // @protocol BranchActivityItemProviderDelegate <NSObject>
@@ -1570,8 +1446,7 @@ namespace IOSNativeBranch {
 
         // @optional -(NSArray *)activityItemTagsForChannel:(NSString *)channel;
         [Export("activityItemTagsForChannel:")]
-        //[Verify(StronglyTypedNSArray)]
-        NSObject[] ActivityItemTagsForChannel(string channel);
+        string[] ActivityItemTagsForChannel(string channel);
 
         // @optional -(NSString *)activityItemFeatureForChannel:(NSString *)channel;
         [Export("activityItemFeatureForChannel:")]
@@ -1600,13 +1475,11 @@ namespace IOSNativeBranch {
     {
         // -(id)initWithParams:(NSDictionary *)params andTags:(NSArray *)tags andFeature:(NSString *)feature andStage:(NSString *)stage andAlias:(NSString *)alias __attribute__((deprecated("Use the delegate method instead")));
         [Export("initWithParams:andTags:andFeature:andStage:andAlias:")]
-        //[Verify(StronglyTypedNSArray)]
-        IntPtr Constructor(NSDictionary @params, NSObject[] tags, string feature, string stage, string alias);
+        NativeHandle Constructor(NSDictionary @params, string[] tags, string feature, string stage, string alias);
 
         // -(id)initWithParams:(NSDictionary *)params tags:(NSArray *)tags feature:(NSString *)feature stage:(NSString *)stage campaign:(NSString *)campaign alias:(NSString *)alias delegate:(id<BranchActivityItemProviderDelegate>)delegate;
         [Export("initWithParams:tags:feature:stage:campaign:alias:delegate:")]
-        //[Verify(StronglyTypedNSArray)]
-        IntPtr Constructor(NSDictionary @params, NSObject[] tags, string feature, string stage, string campaign, string alias, BranchActivityItemProviderDelegate @delegate);
+        NativeHandle Constructor(NSDictionary @params, string[] tags, string feature, string stage, string campaign, string alias, BranchActivityItemProviderDelegate @delegate);
 
         // +(NSString *)humanReadableChannelWithActivityType:(NSString *)activityString;
         [Static]
@@ -1615,20 +1488,11 @@ namespace IOSNativeBranch {
     }
 
     //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
     partial interface Constants
     {
-        // extern NSString *const BRANCH_REQUEST_KEY_BRANCH_IDENTITY;
-        [Field("BRANCH_REQUEST_KEY_BRANCH_IDENTITY", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_BRANCH_IDENTITY { get; }
-
         // extern NSString *const BRANCH_REQUEST_KEY_DEVELOPER_IDENTITY;
         [Field("BRANCH_REQUEST_KEY_DEVELOPER_IDENTITY", "__Internal")]
         NSString BRANCH_REQUEST_KEY_DEVELOPER_IDENTITY { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_DEVICE_FINGERPRINT_ID;
-        [Field("BRANCH_REQUEST_KEY_DEVICE_FINGERPRINT_ID", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_DEVICE_FINGERPRINT_ID { get; }
 
         // extern NSString *const BRANCH_REQUEST_KEY_SESSION_ID;
         [Field("BRANCH_REQUEST_KEY_SESSION_ID", "__Internal")]
@@ -1661,26 +1525,6 @@ namespace IOSNativeBranch {
         // extern NSString *const BRANCH_REQUEST_KEY_STARTING_TRANSACTION_ID;
         [Field("BRANCH_REQUEST_KEY_STARTING_TRANSACTION_ID", "__Internal")]
         NSString BRANCH_REQUEST_KEY_STARTING_TRANSACTION_ID { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_REFERRAL_USAGE_TYPE;
-        [Field("BRANCH_REQUEST_KEY_REFERRAL_USAGE_TYPE", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_REFERRAL_USAGE_TYPE { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_REFERRAL_TYPE;
-        [Field("BRANCH_REQUEST_KEY_REFERRAL_TYPE", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_REFERRAL_TYPE { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_REFERRAL_CREATION_SOURCE;
-        [Field("BRANCH_REQUEST_KEY_REFERRAL_CREATION_SOURCE", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_REFERRAL_CREATION_SOURCE { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_REFERRAL_PREFIX;
-        [Field("BRANCH_REQUEST_KEY_REFERRAL_PREFIX", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_REFERRAL_PREFIX { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_REFERRAL_EXPIRATION;
-        [Field("BRANCH_REQUEST_KEY_REFERRAL_EXPIRATION", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_REFERRAL_EXPIRATION { get; }
 
         // extern NSString *const BRANCH_REQUEST_KEY_URL_SOURCE;
         [Field("BRANCH_REQUEST_KEY_URL_SOURCE", "__Internal")]
@@ -1742,10 +1586,6 @@ namespace IOSNativeBranch {
         [Field("BRANCH_REQUEST_KEY_IOS_VENDOR_ID", "__Internal")]
         NSString BRANCH_REQUEST_KEY_IOS_VENDOR_ID { get; }
 
-        // extern NSString *const BRANCH_REQUEST_KEY_AD_TRACKING_ENABLED;
-        [Field("BRANCH_REQUEST_KEY_AD_TRACKING_ENABLED", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_AD_TRACKING_ENABLED { get; }
-
         // extern NSString *const BRANCH_REQUEST_KEY_DEBUG;
         [Field("BRANCH_REQUEST_KEY_DEBUG", "__Internal")]
         NSString BRANCH_REQUEST_KEY_DEBUG { get; }
@@ -1773,14 +1613,6 @@ namespace IOSNativeBranch {
         // extern NSString *const BRANCH_REQUEST_KEY_URI_SCHEME;
         [Field("BRANCH_REQUEST_KEY_URI_SCHEME", "__Internal")]
         NSString BRANCH_REQUEST_KEY_URI_SCHEME { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_CHECKED_FACEBOOK_APPLINKS;
-        [Field("BRANCH_REQUEST_KEY_CHECKED_FACEBOOK_APPLINKS", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_CHECKED_FACEBOOK_APPLINKS { get; }
-
-        // extern NSString *const BRANCH_REQUEST_KEY_CHECKED_APPLE_AD_ATTRIBUTION;
-        [Field("BRANCH_REQUEST_KEY_CHECKED_APPLE_AD_ATTRIBUTION", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_CHECKED_APPLE_AD_ATTRIBUTION { get; }
 
         // extern NSString *const BRANCH_REQUEST_KEY_LINK_IDENTIFIER;
         [Field("BRANCH_REQUEST_KEY_LINK_IDENTIFIER", "__Internal")]
@@ -1834,17 +1666,9 @@ namespace IOSNativeBranch {
         [Field("BRANCH_REQUEST_KEY_APPLE_TESTFLIGHT", "__Internal")]
         NSString BRANCH_REQUEST_KEY_APPLE_TESTFLIGHT { get; }
 
-        // extern NSString *const BRANCH_REQUEST_ENDPOINT_SET_IDENTITY;
-        [Field("BRANCH_REQUEST_ENDPOINT_SET_IDENTITY", "__Internal")]
-        NSString BRANCH_REQUEST_ENDPOINT_SET_IDENTITY { get; }
-
         // extern NSString *const BRANCH_REQUEST_ENDPOINT_APP_LINK_SETTINGS;
         [Field("BRANCH_REQUEST_ENDPOINT_APP_LINK_SETTINGS", "__Internal")]
         NSString BRANCH_REQUEST_ENDPOINT_APP_LINK_SETTINGS { get; }
-
-        // extern NSString *const BRANCH_REQUEST_ENDPOINT_LOGOUT;
-        [Field("BRANCH_REQUEST_ENDPOINT_LOGOUT", "__Internal")]
-        NSString BRANCH_REQUEST_ENDPOINT_LOGOUT { get; }
 
         // extern NSString *const BRANCH_REQUEST_ENDPOINT_USER_COMPLETED_ACTION;
         [Field("BRANCH_REQUEST_ENDPOINT_USER_COMPLETED_ACTION", "__Internal")]
@@ -1853,10 +1677,6 @@ namespace IOSNativeBranch {
         // extern NSString *const BRANCH_REQUEST_ENDPOINT_GET_SHORT_URL;
         [Field("BRANCH_REQUEST_ENDPOINT_GET_SHORT_URL", "__Internal")]
         NSString BRANCH_REQUEST_ENDPOINT_GET_SHORT_URL { get; }
-
-        // extern NSString *const BRANCH_REQUEST_ENDPOINT_CLOSE;
-        [Field("BRANCH_REQUEST_ENDPOINT_CLOSE", "__Internal")]
-        NSString BRANCH_REQUEST_ENDPOINT_CLOSE { get; }
 
         // extern NSString *const BRANCH_REQUEST_ENDPOINT_OPEN;
         [Field("BRANCH_REQUEST_ENDPOINT_OPEN", "__Internal")]
@@ -1870,17 +1690,9 @@ namespace IOSNativeBranch {
         [Field("BRANCH_REQUEST_ENDPOINT_REGISTER_VIEW", "__Internal")]
         NSString BRANCH_REQUEST_ENDPOINT_REGISTER_VIEW { get; }
 
-        // extern NSString *const BRANCH_REQUEST_ENDPOINT_CPID;
-        [Field("BRANCH_REQUEST_ENDPOINT_CPID", "__Internal")]
-        NSString BRANCH_REQUEST_ENDPOINT_CPID { get; }
-
         // extern NSString *const BRANCH_REQUEST_ENDPOINT_LATD;
         [Field("BRANCH_REQUEST_ENDPOINT_LATD", "__Internal")]
         NSString BRANCH_REQUEST_ENDPOINT_LATD { get; }
-
-        // extern NSString *const BRANCH_RESPONSE_KEY_BRANCH_IDENTITY;
-        [Field("BRANCH_RESPONSE_KEY_BRANCH_IDENTITY", "__Internal")]
-        NSString BRANCH_RESPONSE_KEY_BRANCH_IDENTITY { get; }
 
         // extern NSString *const BRANCH_RESPONSE_KEY_SESSION_ID;
         [Field("BRANCH_RESPONSE_KEY_SESSION_ID", "__Internal")]
@@ -1913,10 +1725,6 @@ namespace IOSNativeBranch {
         // extern NSString *const BRANCH_RESPONSE_KEY_DEVELOPER_IDENTITY;
         [Field("BRANCH_RESPONSE_KEY_DEVELOPER_IDENTITY", "__Internal")]
         NSString BRANCH_RESPONSE_KEY_DEVELOPER_IDENTITY { get; }
-
-        // extern NSString *const BRANCH_RESPONSE_KEY_DEVICE_FINGERPRINT_ID;
-        [Field("BRANCH_RESPONSE_KEY_DEVICE_FINGERPRINT_ID", "__Internal")]
-        NSString BRANCH_RESPONSE_KEY_DEVICE_FINGERPRINT_ID { get; }
 
         // extern NSString *const BRANCH_RESPONSE_KEY_SESSION_DATA;
         [Field("BRANCH_RESPONSE_KEY_SESSION_DATA", "__Internal")]
@@ -2094,44 +1902,108 @@ namespace IOSNativeBranch {
         [Field("BRANCH_ENTITIES_KEY", "__Internal")]
         NSString BRANCH_ENTITIES_KEY { get; }
 
-        // extern NSString *const BRANCH_REQUEST_KEY_SEARCH_AD;
-        [Field("BRANCH_REQUEST_KEY_SEARCH_AD", "__Internal")]
-        NSString BRANCH_REQUEST_KEY_SEARCH_AD { get; }
-
         // extern NSString *const BRANCH_CRASHLYTICS_SDK_VERSION_KEY;
         [Field("BRANCH_CRASHLYTICS_SDK_VERSION_KEY", "__Internal")]
         NSString BRANCH_CRASHLYTICS_SDK_VERSION_KEY { get; }
 
-        // extern NSString *const BRANCH_CRASHLYTICS_FINGERPRINT_ID_KEY;
-        [Field("BRANCH_CRASHLYTICS_FINGERPRINT_ID_KEY", "__Internal")]
-        NSString BRANCH_CRASHLYTICS_FINGERPRINT_ID_KEY { get; }
-
         // extern NSString *const BRANCH_CRASHLYTICS_LOW_MEMORY_KEY;
         [Field("BRANCH_CRASHLYTICS_LOW_MEMORY_KEY", "__Internal")]
         NSString BRANCH_CRASHLYTICS_LOW_MEMORY_KEY { get; }
+        [Field("BRANCH_REQUEST_KEY_RANDOMIZED_BUNDLE_TOKEN", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_RANDOMIZED_BUNDLE_TOKEN { get; }
+
+        [Field("BRANCH_REQUEST_KEY_RANDOMIZED_DEVICE_TOKEN", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_RANDOMIZED_DEVICE_TOKEN { get; }
+
+        [Field("BRANCH_REQUEST_KEY_OPTED_IN_STATUS", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_OPTED_IN_STATUS { get; }
+
+        [Field("BRANCH_REQUEST_KEY_FIRST_OPT_IN", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_FIRST_OPT_IN { get; }
+
+        [Field("BRANCH_REQUEST_KEY_LOCAL_URL", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_LOCAL_URL { get; }
+
+        [Field("BRANCH_REQUEST_KEY_INITIAL_REFERRER", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_INITIAL_REFERRER { get; }
+
+        [Field("BRANCH_REQUEST_KEY_APP_CLIP_BUNDLE_ID", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_APP_CLIP_BUNDLE_ID { get; }
+
+        [Field("BRANCH_REQUEST_KEY_LATEST_APP_CLIP_INSTALL_TIME", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_LATEST_APP_CLIP_INSTALL_TIME { get; }
+
+        [Field("BRANCH_REQUEST_KEY_APP_CLIP_RANDOMIZED_DEVICE_TOKEN", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_APP_CLIP_RANDOMIZED_DEVICE_TOKEN { get; }
+
+        [Field("BRANCH_REQUEST_KEY_APP_CLIP_RANDOMIZED_BUNDLE_TOKEN", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_APP_CLIP_RANDOMIZED_BUNDLE_TOKEN { get; }
+
+        [Field("BRANCH_REQUEST_KEY_PARTNER_PARAMETERS", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_PARTNER_PARAMETERS { get; }
+
+        [Field("BRANCH_REQUEST_METADATA_KEY_SCANTIME_WINDOW", "__Internal")]
+        NSString BRANCH_REQUEST_METADATA_KEY_SCANTIME_WINDOW { get; }
+
+        [Field("BRANCH_REQUEST_KEY_REFERRER_GBRAID", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_REFERRER_GBRAID { get; }
+
+        [Field("BRANCH_REQUEST_KEY_REFERRER_GBRAID_TIMESTAMP", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_REFERRER_GBRAID_TIMESTAMP { get; }
+
+        [Field("BRANCH_REQUEST_KEY_IS_DEEPLINK_GBRAID", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_IS_DEEPLINK_GBRAID { get; }
+
+        [Field("BRANCH_REQUEST_KEY_GCLID", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_GCLID { get; }
+
+        [Field("BRANCH_REQUEST_KEY_META_CAMPAIGN_IDS", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_META_CAMPAIGN_IDS { get; }
+
+        [Field("BRANCH_REQUEST_KEY_SCCID", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_SCCID { get; }
+
+        [Field("BRANCH_REQUEST_KEY_APPLE_ATTRIBUTION_TOKEN", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_APPLE_ATTRIBUTION_TOKEN { get; }
+
+        [Field("BRANCH_REQUEST_KEY_SKAN_POSTBACK_INDEX", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_SKAN_POSTBACK_INDEX { get; }
+
+        [Field("BRANCH_REQUEST_KEY_DMA_EEA", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_DMA_EEA { get; }
+
+        [Field("BRANCH_REQUEST_KEY_DMA_AD_PEROSALIZATION", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_DMA_AD_PEROSALIZATION { get; }
+
+        [Field("BRANCH_REQUEST_KEY_DMA_AD_USER_DATA", "__Internal")]
+        NSString BRANCH_REQUEST_KEY_DMA_AD_USER_DATA { get; }
     }
 
     // @interface BranchCSSearchableItemAttributeSet : CSSearchableItemAttributeSet
     [BaseType(typeof(CSSearchableItemAttributeSet))]
     interface BranchCSSearchableItemAttributeSet
     {
-        // -(id)initWithContentType:(NSString *)type;
+        // -(instancetype _Nonnull)initWithContentType:(UTType * _Nonnull)contentType __attribute__((availability(ios, introduced=14))) __attribute__((availability(maccatalyst, introduced=14)));
         [Export("initWithContentType:")]
-        IntPtr Constructor(string type);
+        NativeHandle Constructor(string contentType);
 
-        // -(void)indexWithCallback:(void (^)(NSString *, NSString *, NSError *))callback;
+        // // -(instancetype _Nonnull)initWithItemContentType:(NSString * _Nonnull)type;
+        // [Export("initWithItemContentType:")]
+        // NativeHandle Constructor(string type);
+
+        // -(void)indexWithCallback:(void (^ _Nonnull)(NSString * _Nullable, NSString * _Nullable, NSError * _Nullable))callback;
         [Export("indexWithCallback:")]
         void IndexWithCallback(Action<NSString, NSString, NSError> callback);
 
-        // @property (nonatomic, strong) NSDictionary * params;
-        [Export("params", ArgumentSemantic.Strong)]
+        // @property (nonatomic, strong) NSDictionary * _Nullable params;
+        [NullAllowed, Export("params", ArgumentSemantic.Strong)]
         NSDictionary Params { get; set; }
 
-        // @property (nonatomic, strong) NSSet * keywords;
-        [Export("keywords", ArgumentSemantic.Strong)]
+        // @property (nonatomic, strong) NSSet * _Nullable keywords;
+        [NullAllowed, Export("keywords", ArgumentSemantic.Strong)]
         NSSet Keywords { get; set; }
 
-        // @property (nonatomic) BOOL publiclyIndexable;
+        // @property (assign, nonatomic) BOOL publiclyIndexable;
         [Export("publiclyIndexable")]
         bool PubliclyIndexable { get; set; }
     }
@@ -2181,7 +2053,6 @@ namespace IOSNativeBranch {
     //}
 
     //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
     partial interface Constants
     {
         // extern BranchContentSchema _Nonnull BranchContentSchemaCommerceAuction;
@@ -2317,8 +2188,8 @@ namespace IOSNativeBranch {
     [BaseType(typeof(NSObject))]
     interface BranchContentMetadata
     {
-        // @property (nonatomic, strong) BranchContentSchema _Nullable contentSchema;
-        [NullAllowed, Export("contentSchema", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) BranchContentSchema _Nullable contentSchema;
+        [NullAllowed, Export("contentSchema")]
         string ContentSchema { get; set; }
 
         // @property (assign, nonatomic) double quantity;
@@ -2329,32 +2200,32 @@ namespace IOSNativeBranch {
         [NullAllowed, Export("price", ArgumentSemantic.Strong)]
         NSDecimalNumber Price { get; set; }
 
-        // @property (nonatomic, strong) BNCCurrency _Nullable currency;
-        [NullAllowed, Export("currency", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) BNCCurrency _Nullable currency;
+        [NullAllowed, Export("currency")]
         string Currency { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable sku;
-        [NullAllowed, Export("sku", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable sku;
+        [NullAllowed, Export("sku")]
         string Sku { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable productName;
-        [NullAllowed, Export("productName", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable productName;
+        [NullAllowed, Export("productName")]
         string ProductName { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable productBrand;
-        [NullAllowed, Export("productBrand", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable productBrand;
+        [NullAllowed, Export("productBrand")]
         string ProductBrand { get; set; }
 
-        // @property (nonatomic, strong) BNCProductCategory _Nullable productCategory;
-        [NullAllowed, Export("productCategory", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) BNCProductCategory _Nullable productCategory;
+        [NullAllowed, Export("productCategory")]
         string ProductCategory { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable productVariant;
-        [NullAllowed, Export("productVariant", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable productVariant;
+        [NullAllowed, Export("productVariant")]
         string ProductVariant { get; set; }
 
-        // @property (nonatomic, strong) BranchCondition _Nullable condition;
-        [NullAllowed, Export("condition", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) BranchCondition _Nullable condition;
+        [NullAllowed, Export("condition")]
         string Condition { get; set; }
 
         // @property (assign, nonatomic) double ratingAverage;
@@ -2373,24 +2244,24 @@ namespace IOSNativeBranch {
         [Export("rating")]
         double Rating { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable addressStreet;
-        [NullAllowed, Export("addressStreet", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable addressStreet;
+        [NullAllowed, Export("addressStreet")]
         string AddressStreet { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable addressCity;
-        [NullAllowed, Export("addressCity", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable addressCity;
+        [NullAllowed, Export("addressCity")]
         string AddressCity { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable addressRegion;
-        [NullAllowed, Export("addressRegion", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable addressRegion;
+        [NullAllowed, Export("addressRegion")]
         string AddressRegion { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable addressCountry;
-        [NullAllowed, Export("addressCountry", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable addressCountry;
+        [NullAllowed, Export("addressCountry")]
         string AddressCountry { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable addressPostalCode;
-        [NullAllowed, Export("addressPostalCode", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable addressPostalCode;
+        [NullAllowed, Export("addressPostalCode")]
         string AddressPostalCode { get; set; }
 
         // @property (assign, nonatomic) double latitude;
@@ -2411,9 +2282,7 @@ namespace IOSNativeBranch {
 
         // -(NSDictionary * _Nonnull)dictionary;
         [Export("dictionary")]
-        //[Verify(MethodToProperty)]
-        //NSDictionary Dictionary { get; }
-        NSDictionary Dictionary();
+        NSDictionary Dictionary { get; }
 
         // +(BranchContentMetadata * _Nonnull)contentMetadataWithDictionary:(NSDictionary * _Nullable)dictionary;
         [Static]
@@ -2427,30 +2296,26 @@ namespace IOSNativeBranch {
     {
         // -(instancetype _Nonnull)initWithCanonicalIdentifier:(NSString * _Nonnull)canonicalIdentifier;
         [Export("initWithCanonicalIdentifier:")]
-        IntPtr Constructor(string canonicalIdentifier);
+        NativeHandle Constructor(string canonicalIdentifier);
 
-        //// -(instancetype _Nonnull)initWithTitle:(NSString * _Nonnull)title;
-        //[Export("initWithTitle:")]
-        //IntPtr Constructor(string title);
-
-        // @property (nonatomic, strong) NSString * _Nullable canonicalIdentifier;
-        [NullAllowed, Export("canonicalIdentifier", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable canonicalIdentifier;
+        [NullAllowed, Export("canonicalIdentifier")]
         string CanonicalIdentifier { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable canonicalUrl;
-        [NullAllowed, Export("canonicalUrl", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable canonicalUrl;
+        [NullAllowed, Export("canonicalUrl")]
         string CanonicalUrl { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable title;
-        [NullAllowed, Export("title", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable title;
+        [NullAllowed, Export("title")]
         string Title { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable contentDescription;
-        [NullAllowed, Export("contentDescription", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable contentDescription;
+        [NullAllowed, Export("contentDescription")]
         string ContentDescription { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable imageUrl;
-        [NullAllowed, Export("imageUrl", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable imageUrl;
+        [NullAllowed, Export("imageUrl")]
         string ImageUrl { get; set; }
 
         // @property (nonatomic, strong) NSArray<NSString *> * _Nullable keywords;
@@ -2517,14 +2382,6 @@ namespace IOSNativeBranch {
         [Export("registerViewWithCallback:")]
         void RegisterViewWithCallback([NullAllowed] Action<NSDictionary, NSError> callback);
 
-        // -(void)userCompletedAction:(NSString * _Nonnull)action;
-        [Export("userCompletedAction:")]
-        void UserCompletedAction(string action);
-
-        // -(void)userCompletedAction:(NSString * _Nonnull)action withState:(NSDictionary * _Nullable)state;
-        [Export("userCompletedAction:withState:")]
-        void UserCompletedAction(string action, [NullAllowed] NSDictionary state);
-
         // -(NSString * _Nullable)getShortUrlWithLinkProperties:(BranchLinkProperties * _Nonnull)linkProperties;
         [Export("getShortUrlWithLinkProperties:")]
         [return: NullAllowed]
@@ -2541,30 +2398,16 @@ namespace IOSNativeBranch {
 
         // -(NSString * _Nullable)getLongUrlWithChannel:(NSString * _Nullable)channel andTags:(NSArray * _Nullable)tags andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andAlias:(NSString * _Nullable)alias;
         [Export("getLongUrlWithChannel:andTags:andFeature:andStage:andAlias:")]
-        //[Verify(StronglyTypedNSArray)]
         [return: NullAllowed]
-        string GetLongUrlWithChannel([NullAllowed] string channel, [NullAllowed] NSObject[] tags, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias);
+        string GetLongUrlWithChannel([NullAllowed] string channel, [NullAllowed] string[] tags, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias);
 
-        // -(UIActivityItemProvider * _Nullable)getBranchActivityItemWithLinkProperties:(BranchLinkProperties * _Nonnull)linkProperties;
-        [Export("getBranchActivityItemWithLinkProperties:")]
-        [return: NullAllowed]
-        UIActivityItemProvider GetBranchActivityItemWithLinkProperties(BranchLinkProperties linkProperties);
-
-        // -(void)showShareSheetWithShareText:(NSString * _Nullable)shareText completion:(void (^ _Nullable)(NSString * _Nullable, BOOL))completion;
+        // -(void)showShareSheetWithShareText:(NSString * _Nullable)shareText completion:(void (^ _Nullable)(NSString * _Nullable, BOOL, NSError * _Nullable))completion;
         [Export("showShareSheetWithShareText:completion:")]
-        void ShowShareSheetWithShareText([NullAllowed] string shareText, [NullAllowed] Action<NSString, bool> completion);
-
-        // -(void)showShareSheetWithLinkProperties:(BranchLinkProperties * _Nullable)linkProperties andShareText:(NSString * _Nullable)shareText fromViewController:(UIViewController * _Nullable)viewController completion:(void (^ _Nullable)(NSString * _Nullable, BOOL))completion;
-        [Export("showShareSheetWithLinkProperties:andShareText:fromViewController:completion:")]
-        void ShowShareSheetWithLinkProperties([NullAllowed] BranchLinkProperties linkProperties, [NullAllowed] string shareText, [NullAllowed] UIViewController viewController, [NullAllowed] Action<string, bool> completion);
+        void ShowShareSheetWithShareText([NullAllowed] string shareText, [NullAllowed] Action<string, bool, NSError> completion);
 
         // -(void)showShareSheetWithLinkProperties:(BranchLinkProperties * _Nullable)linkProperties andShareText:(NSString * _Nullable)shareText fromViewController:(UIViewController * _Nullable)viewController completionWithError:(void (^ _Nullable)(NSString * _Nullable, BOOL, NSError * _Nullable))completion;
         [Export("showShareSheetWithLinkProperties:andShareText:fromViewController:completionWithError:")]
         void ShowShareSheetWithLinkProperties([NullAllowed] BranchLinkProperties linkProperties, [NullAllowed] string shareText, [NullAllowed] UIViewController viewController, [NullAllowed] Action<string, bool, NSError> completion);
-
-        // -(void)showShareSheetWithLinkProperties:(BranchLinkProperties * _Nullable)linkProperties andShareText:(NSString * _Nullable)shareText fromViewController:(UIViewController * _Nullable)viewController anchor:(UIBarButtonItem * _Nullable)anchor completion:(void (^ _Nullable)(NSString * _Nullable, BOOL))completion;
-        [Export("showShareSheetWithLinkProperties:andShareText:fromViewController:anchor:completion:")]
-        void ShowShareSheetWithLinkProperties([NullAllowed] BranchLinkProperties linkProperties, [NullAllowed] string shareText, [NullAllowed] UIViewController viewController, [NullAllowed] UIBarButtonItem anchor, [NullAllowed] Action<string, bool> completion);
 
         // -(void)showShareSheetWithLinkProperties:(BranchLinkProperties * _Nullable)linkProperties andShareText:(NSString * _Nullable)shareText fromViewController:(UIViewController * _Nullable)viewController anchor:(UIBarButtonItem * _Nullable)anchor completionWithError:(void (^ _Nullable)(NSString * _Nullable, BOOL, NSError * _Nullable))completion;
         [Export("showShareSheetWithLinkProperties:andShareText:fromViewController:anchor:completionWithError:")]
@@ -2576,15 +2419,15 @@ namespace IOSNativeBranch {
 
         // -(void)listOnSpotlightWithCallback:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))callback;
         [Export("listOnSpotlightWithCallback:")]
-        void ListOnSpotlightWithCallback([NullAllowed] Action<NSString, NSError> callback);
+        void ListOnSpotlightWithCallback([NullAllowed] Action<string, NSError> callback);
 
         // -(void)listOnSpotlightWithIdentifierCallback:(void (^ _Nullable)(NSString * _Nullable, NSString * _Nullable, NSError * _Nullable))spotlightCallback __attribute__((deprecated("iOS 10 has changed how Spotlight indexing works and we’ve updated the SDK to reflect this. Please see https://dev.branch.io/features/spotlight-indexing/overview/ for instructions on migration.")));
         [Export("listOnSpotlightWithIdentifierCallback:")]
-        void ListOnSpotlightWithIdentifierCallback([NullAllowed] Action<NSString, NSString, NSError> spotlightCallback);
+        void ListOnSpotlightWithIdentifierCallback([NullAllowed] Action<string, string, NSError> spotlightCallback);
 
         // -(void)listOnSpotlightWithLinkProperties:(BranchLinkProperties * _Nullable)linkproperties callback:(void (^ _Nullable)(NSString * _Nullable, NSError * _Nullable))completion;
         [Export("listOnSpotlightWithLinkProperties:callback:")]
-        void ListOnSpotlightWithLinkProperties([NullAllowed] BranchLinkProperties linkproperties, [NullAllowed] Action<NSString, NSError> completion);
+        void ListOnSpotlightWithLinkProperties([NullAllowed] BranchLinkProperties linkproperties, [NullAllowed] Action<string, NSError> completion);
 
         // -(void)removeFromSpotlightWithCallback:(void (^ _Nullable)(NSError * _Nullable))completion;
         [Export("removeFromSpotlightWithCallback:")]
@@ -2600,25 +2443,61 @@ namespace IOSNativeBranch {
 
         // -(NSMutableDictionary * _Nonnull)dictionary;
         [Export("dictionary")]
-        //[Verify(MethodToProperty)]
-        //NSMutableDictionary Dictionary { get; }
-        NSMutableDictionary Dictionary();
+        NSMutableDictionary Dictionary { get; }
 
         // +(BranchUniversalObject * _Nonnull)objectWithDictionary:(NSDictionary * _Null_unspecified)dictionary;
         [Static]
         [Export("objectWithDictionary:")]
         BranchUniversalObject ObjectWithDictionary(NSDictionary dictionary);
 
-        //// -(NSString * _Nonnull)description;
-        //[Export("description")]
-        //[Verify(MethodToProperty)]
-        //string Description { get; }
+        // -(NSString * _Nonnull)description;
+        [Export("description")]
+        string Description { get; }
     }
 
-    //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
+    // @interface BNCInitSessionResponse : NSObject
+    [BaseType(typeof(NSObject))]
+    interface BNCInitSessionResponse
+    {
+        // @property (readwrite, nonatomic, strong) NSDictionary * _Nonnull params;
+        [Export("params", ArgumentSemantic.Strong)]
+        NSDictionary Params { get; set; }
+
+        // @property (readwrite, nonatomic, strong) BranchUniversalObject * _Nonnull universalObject;
+        [Export("universalObject", ArgumentSemantic.Strong)]
+        BranchUniversalObject UniversalObject { get; set; }
+
+        // @property (readwrite, nonatomic, strong) BranchLinkProperties * _Nonnull linkProperties;
+        [Export("linkProperties", ArgumentSemantic.Strong)]
+        BranchLinkProperties LinkProperties { get; set; }
+
+        // @property (readwrite, copy, nonatomic) NSString * _Nonnull sceneIdentifier;
+        [Export("sceneIdentifier")]
+        string SceneIdentifier { get; set; }
+
+        // @property (readwrite, nonatomic, strong) NSError * _Nonnull error;
+        [Export("error", ArgumentSemantic.Strong)]
+        NSError Error { get; set; }
+    }
+
     partial interface Constants
     {
+        // extern const BranchAttributionLevel _Nonnull BranchAttributionLevelFull;
+        [Field("BranchAttributionLevelFull", "__Internal")]
+        NSString BranchAttributionLevelFull { get; }
+
+        // extern const BranchAttributionLevel _Nonnull BranchAttributionLevelReduced;
+        [Field("BranchAttributionLevelReduced", "__Internal")]
+        NSString BranchAttributionLevelReduced { get; }
+
+        // extern const BranchAttributionLevel _Nonnull BranchAttributionLevelMinimal;
+        [Field("BranchAttributionLevelMinimal", "__Internal")]
+        NSString BranchAttributionLevelMinimal { get; }
+
+        // extern const BranchAttributionLevel _Nonnull BranchAttributionLevelNone;
+        [Field("BranchAttributionLevelNone", "__Internal")]
+        NSString BranchAttributionLevelNone { get; }
+
         // extern BranchStandardEvent _Nonnull BranchStandardEventAddToCart;
         [Field("BranchStandardEventAddToCart", "__Internal")]
         NSString BranchStandardEventAddToCart { get; }
@@ -2642,6 +2521,10 @@ namespace IOSNativeBranch {
         // extern BranchStandardEvent _Nonnull BranchStandardEventPurchase;
         [Field("BranchStandardEventPurchase", "__Internal")]
         NSString BranchStandardEventPurchase { get; }
+
+        // extern BranchStandardEvent _Nonnull BranchStandardEventSpendCredits;
+        [Field("BranchStandardEventSpendCredits", "__Internal")]
+        NSString BranchStandardEventSpendCredits { get; }
 
         // extern BranchStandardEvent _Nonnull BranchStandardEventSubscribe;
         [Field("BranchStandardEventSubscribe", "__Internal")]
@@ -2714,6 +2597,14 @@ namespace IOSNativeBranch {
         // extern BranchStandardEvent _Nonnull BranchStandardEventReserve;
         [Field("BranchStandardEventReserve", "__Internal")]
         NSString BranchStandardEventReserve { get; }
+
+        // extern BranchStandardEvent _Nonnull BranchStandardEventOptIn;
+        [Field("BranchStandardEventOptIn", "__Internal")]
+        NSString BranchStandardEventOptIn { get; }
+
+        // extern BranchStandardEvent _Nonnull BranchStandardEventOptOut;
+        [Field("BranchStandardEventOptOut", "__Internal")]
+        NSString BranchStandardEventOptOut { get; }
     }
 
     // @interface BranchEvent : NSObject
@@ -2724,7 +2615,7 @@ namespace IOSNativeBranch {
         // -(instancetype _Nonnull)initWithName:(NSString * _Nonnull)name __attribute__((objc_designated_initializer));
         [Export("initWithName:")]
         [DesignatedInitializer]
-        IntPtr Constructor(string name);
+        NativeHandle Constructor(string name);
 
         // +(instancetype _Nonnull)standardEvent:(BranchStandardEvent _Nonnull)standardEvent;
         [Static]
@@ -2746,16 +2637,16 @@ namespace IOSNativeBranch {
         [Export("customEventWithName:contentItem:")]
         BranchEvent CustomEventWithName(string name, BranchUniversalObject contentItem);
 
-        // @property (nonatomic, strong) NSString * _Nullable alias;
-        [NullAllowed, Export("alias", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable alias;
+        [NullAllowed, Export("alias")]
         string Alias { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable transactionID;
-        [NullAllowed, Export("transactionID", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable transactionID;
+        [NullAllowed, Export("transactionID")]
         string TransactionID { get; set; }
 
-        // @property (nonatomic, strong) BNCCurrency _Nullable currency;
-        [NullAllowed, Export("currency", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) BNCCurrency _Nullable currency;
+        [NullAllowed, Export("currency")]
         string Currency { get; set; }
 
         // @property (nonatomic, strong) NSDecimalNumber * _Nullable revenue;
@@ -2770,34 +2661,37 @@ namespace IOSNativeBranch {
         [NullAllowed, Export("tax", ArgumentSemantic.Strong)]
         NSDecimalNumber Tax { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable coupon;
-        [NullAllowed, Export("coupon", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable coupon;
+        [NullAllowed, Export("coupon")]
         string Coupon { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable affiliation;
-        [NullAllowed, Export("affiliation", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable affiliation;
+        [NullAllowed, Export("affiliation")]
         string Affiliation { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable eventDescription;
-        [NullAllowed, Export("eventDescription", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable eventDescription;
+        [NullAllowed, Export("eventDescription")]
         string EventDescription { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable searchQuery;
-        [NullAllowed, Export("searchQuery", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable searchQuery;
+        [NullAllowed, Export("searchQuery")]
         string SearchQuery { get; set; }
 
         // @property (assign, nonatomic) BranchEventAdType adType;
         [Export("adType", ArgumentSemantic.Assign)]
         BranchEventAdType AdType { get; set; }
 
-        // @property (copy, nonatomic) NSArray<BranchUniversalObject *> * _Nonnull contentItems;
+        // @property (nonatomic, strong) NSArray<BranchUniversalObject *> * _Nonnull contentItems;
         [Export("contentItems", ArgumentSemantic.Strong)]
-        //BranchUniversalObject[] ContentItems { get; set; }
         NSArray ContentItems { get; set; }
 
-        // @property (copy, nonatomic) NSDictionary<NSString *,NSString *> * _Nonnull customData;
+        // @property (nonatomic, strong) NSDictionary<NSString *,NSString *> * _Nonnull customData;
         [Export("customData", ArgumentSemantic.Strong)]
         NSDictionary<NSString, NSString> CustomData { get; set; }
+
+        // -(void)logEventWithCompletion:(void (^ _Nullable)(BOOL, NSError * _Nullable))completion;
+        [Export("logEventWithCompletion:")]
+        void LogEventWithCompletion([NullAllowed] Action<bool, NSError> completion);
 
         // -(void)logEvent;
         [Export("logEvent")]
@@ -2805,14 +2699,11 @@ namespace IOSNativeBranch {
 
         // -(NSDictionary * _Nonnull)dictionary;
         [Export("dictionary")]
-        //[Verify(MethodToProperty)]
-        //NSDictionary Dictionary { get; }
-        NSDictionary Dictionary();
+        NSDictionary Dictionary { get; }
 
-        //// -(NSString * _Nonnull)description;
-        //[Export("description")]
-        //[Verify(MethodToProperty)]
-        //string Description { get; }
+        // -(NSString * _Nonnull)description;
+        [Export("description")]
+        string Description { get; }
     }
 
     // @interface BranchEventRequest : BNCServerRequest <NSSecureCoding>
@@ -2821,17 +2712,17 @@ namespace IOSNativeBranch {
     {
         // -(instancetype _Nonnull)initWithServerURL:(NSURL * _Nonnull)serverURL eventDictionary:(NSDictionary * _Nullable)eventDictionary completion:(void (^ _Nullable)(NSDictionary * _Nullable, NSError * _Nullable))completion;
         [Export("initWithServerURL:eventDictionary:completion:")]
-        IntPtr Constructor(NSUrl serverURL, [NullAllowed] NSDictionary eventDictionary, [NullAllowed] Action<NSDictionary, NSError> completion);
+        NativeHandle Constructor(NSUrl serverURL, [NullAllowed] NSDictionary eventDictionary, [NullAllowed] Action<NSDictionary, NSError> completion);
 
-        // @property (strong) NSDictionary * _Nullable eventDictionary;
+        // @property (nonatomic, strong) NSDictionary * _Nullable eventDictionary;
         [NullAllowed, Export("eventDictionary", ArgumentSemantic.Strong)]
         NSDictionary EventDictionary { get; set; }
 
-        // @property (strong) NSURL * _Nullable serverURL;
+        // @property (nonatomic, strong) NSURL * _Nullable serverURL;
         [NullAllowed, Export("serverURL", ArgumentSemantic.Strong)]
         NSUrl ServerURL { get; set; }
 
-        // @property (copy) void (^ _Nullable)(NSDictionary * _Nullable, NSError * _Nullable) completion;
+        // @property (copy, nonatomic) void (^ _Nullable)(NSDictionary * _Nullable, NSError * _Nullable) completion;
         [NullAllowed, Export("completion", ArgumentSemantic.Copy)]
         Action<NSDictionary, NSError> Completion { get; set; }
     }
@@ -2842,30 +2733,29 @@ namespace IOSNativeBranch {
     {
         // @property (nonatomic, strong) NSArray * tags;
         [Export("tags", ArgumentSemantic.Strong)]
-        //[Verify(StronglyTypedNSArray)]
         NSObject[] Tags { get; set; }
 
-        // @property (nonatomic, strong) NSString * feature;
-        [Export("feature", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * feature;
+        [Export("feature")]
         string Feature { get; set; }
 
-        // @property (nonatomic, strong) NSString * alias;
-        [Export("alias", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * alias;
+        [Export("alias")]
         string Alias { get; set; }
 
-        // @property (nonatomic, strong) NSString * channel;
-        [Export("channel", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * channel;
+        [Export("channel")]
         string Channel { get; set; }
 
-        // @property (nonatomic, strong) NSString * stage;
-        [Export("stage", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * stage;
+        [Export("stage")]
         string Stage { get; set; }
 
-        // @property (nonatomic, strong) NSString * campaign;
-        [Export("campaign", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * campaign;
+        [Export("campaign")]
         string Campaign { get; set; }
 
-        // @property (nonatomic) NSUInteger matchDuration;
+        // @property (assign, nonatomic) NSUInteger matchDuration;
         [Export("matchDuration")]
         nuint MatchDuration { get; set; }
 
@@ -2882,10 +2772,9 @@ namespace IOSNativeBranch {
         [Export("getBranchLinkPropertiesFromDictionary:")]
         BranchLinkProperties GetBranchLinkPropertiesFromDictionary(NSDictionary dictionary);
 
-        //// -(NSString *)description;
-        //[Export("description")]
-        //[Verify(MethodToProperty)]
-        //string Description { get; }
+        // -(NSString *)description;
+        [Export("description")]
+        string Description { get; }
     }
 
     // @protocol BranchDelegate <NSObject>
@@ -2907,7 +2796,6 @@ namespace IOSNativeBranch {
     }
 
     //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
     partial interface Constants
     {
         // extern NSString *const _Nonnull BranchWillStartSessionNotification;
@@ -2957,39 +2845,47 @@ namespace IOSNativeBranch {
         // -(instancetype _Nonnull)initWithUniversalObject:(BranchUniversalObject * _Nonnull)universalObject linkProperties:(BranchLinkProperties * _Nonnull)linkProperties __attribute__((objc_designated_initializer));
         [Export("initWithUniversalObject:linkProperties:")]
         [DesignatedInitializer]
-        IntPtr Constructor(BranchUniversalObject universalObject, BranchLinkProperties linkProperties);
+        NativeHandle Constructor(BranchUniversalObject universalObject, BranchLinkProperties linkProperties);
 
         // -(NSArray<UIActivityItemProvider *> * _Nonnull)activityItems;
         [Export("activityItems")]
-        //[Verify(MethodToProperty)]
         UIActivityItemProvider[] ActivityItems { get; }
 
         // -(void)presentActivityViewControllerFromViewController:(UIViewController * _Nullable)viewController anchor:(id _Nullable)anchorViewOrButtonItem;
         [Export("presentActivityViewControllerFromViewController:anchor:")]
         void PresentActivityViewControllerFromViewController([NullAllowed] UIViewController viewController, [NullAllowed] NSObject anchorViewOrButtonItem);
 
-        // @property (nonatomic, strong) NSString * _Nullable title;
-        [NullAllowed, Export("title", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable title;
+        [NullAllowed, Export("title")]
         string Title { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable shareText;
-        [NullAllowed, Export("shareText", ArgumentSemantic.Strong)]
+        // @property (nonatomic, strong) NSURL * _Nullable placeholderURL;
+        [NullAllowed, Export("placeholderURL", ArgumentSemantic.Strong)]
+        NSUrl PlaceholderURL { get; set; }
+
+        // @property (nonatomic, strong) LPLinkMetadata * _Nullable lpMetaData __attribute__((availability(ios, introduced=13.0))) __attribute__((availability(maccatalyst, introduced=13.1)));
+        // [MacCatalyst(13, 1), iOS(13, 0)]
+        // [NullAllowed, Export("lpMetaData", ArgumentSemantic.Strong)]
+        // LPLinkMetadata LpMetaData { get; set; }
+
+        // @property (copy, nonatomic) NSString * _Nullable shareText;
+        [NullAllowed, Export("shareText")]
         string ShareText { get; set; }
 
         // @property (nonatomic, strong) id _Nullable shareObject;
         [NullAllowed, Export("shareObject", ArgumentSemantic.Strong)]
         NSObject ShareObject { get; set; }
 
-        // @property (nonatomic, strong) NSString * _Nullable emailSubject;
-        [NullAllowed, Export("emailSubject", ArgumentSemantic.Strong)]
+        // @property (copy, nonatomic) NSString * _Nullable emailSubject;
+        [NullAllowed, Export("emailSubject")]
         string EmailSubject { get; set; }
 
         // @property (readonly, nonatomic, strong) NSURL * _Nullable shareURL;
         [NullAllowed, Export("shareURL", ArgumentSemantic.Strong)]
         NSUrl ShareURL { get; }
 
-        // @property (readonly, nonatomic, strong) NSString * _Nullable activityType;
-        [NullAllowed, Export("activityType", ArgumentSemantic.Strong)]
+        // @property (readonly, copy, nonatomic) NSString * _Nullable activityType;
+        [NullAllowed, Export("activityType")]
         string ActivityType { get; }
 
         // @property (nonatomic, strong) NSMutableDictionary * _Nullable serverParameters;
@@ -3011,57 +2907,14 @@ namespace IOSNativeBranch {
         // @property (nonatomic, weak) id<BranchShareLinkDelegate> _Nullable delegate;
         [NullAllowed, Export("delegate", ArgumentSemantic.Weak)]
         NSObject WeakDelegate { get; set; }
-    }
 
-    // @interface BranchProbabilisticCrossPlatformID : NSObject
-    [BaseType(typeof(NSObject))]
-    interface BranchProbabilisticCrossPlatformID
-    {
-        // @property (readonly, copy, nonatomic) NSString * _Nonnull crossPlatformID;
-        [Export("crossPlatformID")]
-        string CrossPlatformID { get; }
+        // @property void (^ _Nullable)(NSString * _Nullable, BOOL, NSError * _Nullable) completionError;
+        [NullAllowed, Export("completionError", ArgumentSemantic.Assign)]
+        Action<NSString, bool, NSError> CompletionError { get; set; }
 
-        // @property (readonly, copy, nonatomic) NSNumber * _Nonnull score;
-        [Export("score", ArgumentSemantic.Copy)]
-        NSNumber Score { get; }
-
-        // +(BranchProbabilisticCrossPlatformID * _Nullable)buildFromJSON:(NSDictionary * _Nonnull)json;
-        [Static]
-        [Export("buildFromJSON:")]
-        [return: NullAllowed]
-        BranchProbabilisticCrossPlatformID BuildFromJSON(NSDictionary json);
-    }
-
-    // @interface BranchCrossPlatformID : NSObject
-    [BaseType(typeof(NSObject))]
-    interface BranchCrossPlatformID
-    {
-        // @property (readonly, copy, nonatomic) NSString * _Nonnull crossPlatformID;
-        [Export("crossPlatformID")]
-        string CrossPlatformID { get; }
-
-        // @property (readonly, copy, nonatomic) NSString * _Nonnull developerID;
-        [Export("developerID")]
-        string DeveloperID { get; }
-
-        // @property (readonly, nonatomic, strong) NSArray<NSString *> * _Nonnull pastCrossPlatformIDs;
-        [Export("pastCrossPlatformIDs", ArgumentSemantic.Strong)]
-        string[] PastCrossPlatformIDs { get; }
-
-        // @property (readonly, nonatomic, strong) NSArray<BranchProbabilisticCrossPlatformID *> * _Nonnull probabiliticCrossPlatformIDs;
-        [Export("probabiliticCrossPlatformIDs", ArgumentSemantic.Strong)]
-        BranchProbabilisticCrossPlatformID[] ProbabiliticCrossPlatformIDs { get; }
-
-        // +(BranchCrossPlatformID * _Nullable)buildFromJSON:(NSDictionary * _Nonnull)json;
-        [Static]
-        [Export("buildFromJSON:")]
-        [return: NullAllowed]
-        BranchCrossPlatformID BuildFromJSON(NSDictionary json);
-
-        // +(void)requestCrossPlatformIdData:(BNCServerInterface * _Nonnull)serverInterface key:(NSString * _Nonnull)key completion:(void (^ _Nonnull)(BranchCrossPlatformID * _Nullable))completion;
-        [Static]
-        [Export("requestCrossPlatformIdData:key:completion:")]
-        void RequestCrossPlatformIdData(BNCServerInterface serverInterface, string key, Action<BranchCrossPlatformID> completion);
+        // -(void)addLPLinkMetadata:(NSString * _Nullable)title icon:(UIImage * _Nullable)icon __attribute__((availability(ios, introduced=13.0))) __attribute__((availability(maccatalyst, introduced=13.1)));
+        [Export("addLPLinkMetadata:icon:")]
+        void AddLPLinkMetadata([NullAllowed] string title, [NullAllowed] UIImage icon);
     }
 
     // @interface BranchLastAttributedTouchData : NSObject
@@ -3072,8 +2925,8 @@ namespace IOSNativeBranch {
         [Export("lastAttributedTouchJSON", ArgumentSemantic.Strong)]
         NSDictionary LastAttributedTouchJSON { get; }
 
-        // @property (readonly, copy, nonatomic) NSNumber * _Nonnull attributionWindow;
-        [Export("attributionWindow", ArgumentSemantic.Copy)]
+        // @property (readonly, nonatomic, strong) NSNumber * _Nonnull attributionWindow;
+        [Export("attributionWindow", ArgumentSemantic.Strong)]
         NSNumber AttributionWindow { get; }
 
         // +(BranchLastAttributedTouchData * _Nullable)buildFromJSON:(NSDictionary * _Nonnull)json;
@@ -3082,10 +2935,10 @@ namespace IOSNativeBranch {
         [return: NullAllowed]
         BranchLastAttributedTouchData BuildFromJSON(NSDictionary json);
 
-        // +(void)requestLastTouchAttributedData:(BNCServerInterface * _Nonnull)serverInterface key:(NSString * _Nonnull)key attributionWindow:(NSInteger)window completion:(void (^ _Nonnull)(BranchLastAttributedTouchData * _Nonnull))completion;
+        // +(void)requestLastTouchAttributedData:(BNCServerInterface * _Nonnull)serverInterface key:(NSString * _Nonnull)key attributionWindow:(NSInteger)window completion:(void (^ _Nonnull)(BranchLastAttributedTouchData * _Nonnull, NSError * _Nonnull))completion;
         [Static]
         [Export("requestLastTouchAttributedData:key:attributionWindow:completion:")]
-        void RequestLastTouchAttributedData(BNCServerInterface serverInterface, string key, nint window, Action<BranchLastAttributedTouchData> completion);
+        void RequestLastTouchAttributedData(BNCServerInterface serverInterface, string key, nint window, Action<BranchLastAttributedTouchData, NSError> completion);
     }
 
     // @interface Branch (UIViewController)
@@ -3096,23 +2949,77 @@ namespace IOSNativeBranch {
         // +(UIWindow * _Nullable)bnc_currentWindow;
         [Static]
         [NullAllowed, Export("bnc_currentWindow")]
-        //[Verify(MethodToProperty)]
         UIWindow Bnc_currentWindow { get; }
 
         // +(UIViewController * _Nullable)bnc_currentViewController;
         [Static]
         [NullAllowed, Export("bnc_currentViewController")]
-        //[Verify(MethodToProperty)]
         UIViewController Bnc_currentViewController { get; }
 
         //// -(UIViewController * _Nonnull)bnc_currentViewController;
         //[Export("bnc_currentViewController")]
-        //[Verify(MethodToProperty)]
         //UIViewController Bnc_currentViewController { get; }
     }
 
+    // typedef void (^BranchLogCallback)(NSString * _Nonnull, BranchLogLevel, NSError * _Nullable);
+    delegate void BranchLogCallback(string arg0, BranchLogLevel arg1, [NullAllowed] NSError arg2);
+
+    // @interface BranchLogger : NSObject
+    [BaseType(typeof(NSObject))]
+    interface BranchLogger
+    {
+        // @property (assign, nonatomic) BOOL loggingEnabled;
+        [Export("loggingEnabled")]
+        bool LoggingEnabled { get; set; }
+
+        // @property (assign, nonatomic) BOOL includeCallerDetails;
+        [Export("includeCallerDetails")]
+        bool IncludeCallerDetails { get; set; }
+
+        // @property (copy, nonatomic) BranchLogCallback _Nullable logCallback;
+        [NullAllowed, Export("logCallback", ArgumentSemantic.Copy)]
+        BranchLogCallback LogCallback { get; set; }
+
+        // @property (assign, nonatomic) BranchLogLevel logLevelThreshold;
+        [Export("logLevelThreshold", ArgumentSemantic.Assign)]
+        BranchLogLevel LogLevelThreshold { get; set; }
+
+        // +(instancetype _Nonnull)shared;
+        [Static]
+        [Export("shared")]
+        BranchLogger Shared();
+
+        // -(BOOL)shouldLog:(BranchLogLevel)level;
+        [Export("shouldLog:")]
+        bool ShouldLog(BranchLogLevel level);
+
+        // -(void)disableCallerDetails;
+        [Export("disableCallerDetails")]
+        void DisableCallerDetails();
+
+        // -(void)logError:(NSString * _Nonnull)message error:(NSError * _Nullable)error;
+        [Export("logError:error:")]
+        void LogError(string message, [NullAllowed] NSError error);
+
+        // -(void)logWarning:(NSString * _Nonnull)message error:(NSError * _Nullable)error;
+        [Export("logWarning:error:")]
+        void LogWarning(string message, [NullAllowed] NSError error);
+
+        // -(void)logDebug:(NSString * _Nonnull)message error:(NSError * _Nullable)error;
+        [Export("logDebug:error:")]
+        void LogDebug(string message, [NullAllowed] NSError error);
+
+        // -(void)logVerbose:(NSString * _Nonnull)message error:(NSError * _Nullable)error;
+        [Export("logVerbose:error:")]
+        void LogVerbose(string message, [NullAllowed] NSError error);
+
+        // +(NSString * _Nonnull)formatMessage:(NSString * _Nonnull)message logLevel:(BranchLogLevel)logLevel error:(NSError * _Nonnull)error;
+        [Static]
+        [Export("formatMessage:logLevel:error:")]
+        string FormatMessage(string message, BranchLogLevel logLevel, NSError error);
+    }
+
     //[Static]
-    //[Verify(ConstantsInterfaceAssociation)]
     partial interface Constants
     {
         // extern NSString *const _Nonnull BRANCH_FEATURE_TAG_SHARE;
@@ -3187,10 +3094,6 @@ namespace IOSNativeBranch {
         [Field("BNCPurchaseCurrency", "__Internal")]
         NSString BNCPurchaseCurrency { get; }
 
-        //// extern NSString *const _Nonnull BNCCanonicalIdList;
-        //[Field("BNCCanonicalIdList", "__Internal")]
-        //NSString BNCCanonicalIdList { get; }
-
         // extern NSString *const _Nonnull BNCRegisterViewEvent;
         [Field("BNCRegisterViewEvent", "__Internal")]
         NSString BNCRegisterViewEvent { get; }
@@ -3250,13 +3153,11 @@ namespace IOSNativeBranch {
         // +(Branch * _Nonnull)getTestInstance __attribute__((deprecated("Use `Branch.useTestBranchKey = YES;` instead.")));
         [Static]
         [Export("getTestInstance")]
-        //[Verify(MethodToProperty)]
         Branch TestInstance { get; }
 
         // +(Branch * _Nonnull)getInstance;
         [Static]
         [Export("getInstance")]
-        //[Verify(MethodToProperty)]
         Branch Instance { get; }
 
         // +(Branch * _Nonnull)getInstance:(NSString * _Nonnull)branchKey;
@@ -3268,14 +3169,12 @@ namespace IOSNativeBranch {
         // +(void)setNetworkServiceClass:(Class _Nonnull)networkServiceClass;
         [Static]
         [Export("networkServiceClass")]
-        //[Verify(MethodToProperty)]
         Class NetworkServiceClass { get; set; }
 
         // +(BOOL)useTestBranchKey;
         // +(void)setUseTestBranchKey:(BOOL)useTestKey;
         [Static]
         [Export("useTestBranchKey")]
-        //[Verify(MethodToProperty)]
         bool UseTestBranchKey { get; set; }
 
         // +(void)setBranchKey:(NSString * _Nonnull)branchKey error:(NSError * _Nullable * _Nullable)error;
@@ -3287,21 +3186,12 @@ namespace IOSNativeBranch {
         // +(void)setBranchKey:(NSString * _Nonnull)branchKey;
         [Static]
         [NullAllowed, Export("branchKey")]
-        //[Verify(MethodToProperty)]
         string BranchKey { get; set; }
 
         // +(BOOL)branchKeyIsSet;
         [Static]
         [Export("branchKeyIsSet")]
-        //[Verify(MethodToProperty)]
         bool BranchKeyIsSet { get; }
-
-        // +(BOOL)enableFingerprintIDInCrashlyticsReports;
-        // +(void)setEnableFingerprintIDInCrashlyticsReports:(BOOL)enabled;
-        [Static]
-        [Export("enableFingerprintIDInCrashlyticsReports")]
-        //[Verify(MethodToProperty)]
-        bool EnableFingerprintIDInCrashlyticsReports { get; set; }
 
         [Wrap("WeakDelegate")]
         [NullAllowed]
@@ -3329,26 +3219,22 @@ namespace IOSNativeBranch {
         // +(BranchActivityItemProvider * _Nonnull)getBranchActivityItemWithParams:(NSDictionary * _Nonnull)params feature:(NSString * _Nullable)feature stage:(NSString * _Nullable)stage tags:(NSArray * _Nullable)tags;
         [Static]
         [Export("getBranchActivityItemWithParams:feature:stage:tags:")]
-        //[Verify(StronglyTypedNSArray)]
-        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] NSObject[] tags);
+        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string[] tags);
 
         // +(BranchActivityItemProvider * _Nonnull)getBranchActivityItemWithParams:(NSDictionary * _Nonnull)params feature:(NSString * _Nullable)feature stage:(NSString * _Nullable)stage tags:(NSArray * _Nullable)tags alias:(NSString * _Nullable)alias;
         [Static]
         [Export("getBranchActivityItemWithParams:feature:stage:tags:alias:")]
-        //[Verify(StronglyTypedNSArray)]
-        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] NSObject[] tags, [NullAllowed] string alias);
+        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string[] tags, [NullAllowed] string alias);
 
         // +(BranchActivityItemProvider * _Nonnull)getBranchActivityItemWithParams:(NSDictionary * _Nonnull)params feature:(NSString * _Nullable)feature stage:(NSString * _Nullable)stage campaign:(NSString * _Nullable)campaign tags:(NSArray * _Nullable)tags alias:(NSString * _Nullable)alias;
         [Static]
         [Export("getBranchActivityItemWithParams:feature:stage:campaign:tags:alias:")]
-        //[Verify(StronglyTypedNSArray)]
-        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string campaign, [NullAllowed] NSObject[] tags, [NullAllowed] string alias);
+        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string campaign, [NullAllowed] string[] tags, [NullAllowed] string alias);
 
         // +(BranchActivityItemProvider * _Nonnull)getBranchActivityItemWithParams:(NSDictionary * _Nonnull)params feature:(NSString * _Nullable)feature stage:(NSString * _Nullable)stage tags:(NSArray * _Nullable)tags alias:(NSString * _Nullable)alias delegate:(id<BranchActivityItemProviderDelegate> _Nullable)delegate;
         [Static]
         [Export("getBranchActivityItemWithParams:feature:stage:tags:alias:delegate:")]
-        //[Verify(StronglyTypedNSArray)]
-        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] NSObject[] tags, [NullAllowed] string alias, [NullAllowed] BranchActivityItemProviderDelegate @delegate);
+        BranchActivityItemProvider GetBranchActivityItemWithParams(NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string[] tags, [NullAllowed] string alias, [NullAllowed] BranchActivityItemProviderDelegate @delegate);
 
         // -(void)initSessionWithLaunchOptions:(NSDictionary * _Nullable)options;
         [Export("initSessionWithLaunchOptions:")]
@@ -3374,9 +3260,9 @@ namespace IOSNativeBranch {
         [Export("initSessionWithLaunchOptions:isReferrable:andRegisterDeepLinkHandler:")]
         void InitSessionWithLaunchOptions([NullAllowed] NSDictionary options, bool isReferrable, [NullAllowed] callbackWithParams callback);
 
-        //// -(void)initSessionWithLaunchOptions:(NSDictionary * _Nullable)options isReferrable:(BOOL)isReferrable automaticallyDisplayDeepLinkController:(BOOL)automaticallyDisplayController;
-        //[Export("initSessionWithLaunchOptions:isReferrable:automaticallyDisplayDeepLinkController:")]
-        //void InitSessionWithLaunchOptions([NullAllowed] NSDictionary options, bool isReferrable, bool automaticallyDisplayController);
+        // -(void)initSessionWithLaunchOptions:(NSDictionary * _Nullable)options isReferrable:(BOOL)isReferrable automaticallyDisplayDeepLinkController:(BOOL)automaticallyDisplayController;
+        [Export("initSessionWithLaunchOptions:isReferrable:automaticallyDisplayDeepLinkController:")]
+        void InitSessionWithLaunchOptions([NullAllowed] NSDictionary options, bool isReferrable, bool automaticallyDisplayController);
 
         //// -(void)initSessionWithLaunchOptions:(NSDictionary * _Nullable)options automaticallyDisplayDeepLinkController:(BOOL)automaticallyDisplayController deepLinkHandler:(callbackWithParams _Nullable)callback;
         //[Export("initSessionWithLaunchOptions:automaticallyDisplayDeepLinkController:deepLinkHandler:")]
@@ -3386,9 +3272,17 @@ namespace IOSNativeBranch {
         [Export("initSessionWithLaunchOptions:automaticallyDisplayDeepLinkController:isReferrable:deepLinkHandler:")]
         void InitSessionWithLaunchOptions([NullAllowed] NSDictionary options, bool automaticallyDisplayController, bool isReferrable, [NullAllowed] callbackWithParams callback);
 
+        // -(void)initSceneSessionWithLaunchOptions:(NSDictionary * _Nonnull)options isReferrable:(BOOL)isReferrable explicitlyRequestedReferrable:(BOOL)explicitlyRequestedReferrable automaticallyDisplayController:(BOOL)automaticallyDisplayController registerDeepLinkHandler:(void (^ _Nonnull)(BNCInitSessionResponse * _Nullable, NSError * _Nullable))callback;
+        [Export("initSceneSessionWithLaunchOptions:isReferrable:explicitlyRequestedReferrable:automaticallyDisplayController:registerDeepLinkHandler:")]
+        void InitSceneSessionWithLaunchOptions(NSDictionary options, bool isReferrable, bool explicitlyRequestedReferrable, bool automaticallyDisplayController, Action<BNCInitSessionResponse, NSError> callback);
+
         // -(BOOL)handleDeepLink:(NSURL * _Nullable)url;
         [Export("handleDeepLink:")]
         bool HandleDeepLink([NullAllowed] NSUrl url);
+
+        // -(BOOL)handleDeepLink:(NSURL * _Nullable)url sceneIdentifier:(NSString * _Nullable)sceneIdentifier;
+        [Export("handleDeepLink:sceneIdentifier:")]
+        bool HandleDeepLink([NullAllowed] NSUrl url, [NullAllowed] string sceneIdentifier);
 
         // -(BOOL)handleDeepLinkWithNewSession:(NSURL * _Nullable)url;
         [Export("handleDeepLinkWithNewSession:")]
@@ -3398,33 +3292,60 @@ namespace IOSNativeBranch {
         [Export("continueUserActivity:")]
         bool ContinueUserActivity([NullAllowed] NSUserActivity userActivity);
 
+        // -(BOOL)continueUserActivity:(NSUserActivity * _Nullable)userActivity sceneIdentifier:(NSString * _Nullable)sceneIdentifier;
+        [Export("continueUserActivity:sceneIdentifier:")]
+        bool ContinueUserActivity([NullAllowed] NSUserActivity userActivity, [NullAllowed] string sceneIdentifier);
+
         // -(BOOL)application:(UIApplication * _Nullable)application openURL:(NSURL * _Nullable)url sourceApplication:(NSString * _Nullable)sourceApplication annotation:(id _Nullable)annotation;
         [Export("application:openURL:sourceApplication:annotation:")]
         bool Application([NullAllowed] UIApplication application, [NullAllowed] NSUrl url, [NullAllowed] string sourceApplication, [NullAllowed] NSObject annotation);
+
+        // -(BOOL)sceneIdentifier:(NSString * _Nullable)sceneIdentifier openURL:(NSURL * _Nullable)url sourceApplication:(NSString * _Nullable)sourceApplication annotation:(id _Nullable)annotation;
+        [Export("sceneIdentifier:openURL:sourceApplication:annotation:")]
+        bool SceneIdentifier([NullAllowed] string sceneIdentifier, [NullAllowed] NSUrl url, [NullAllowed] string sourceApplication, [NullAllowed] NSObject annotation);
 
         // -(BOOL)application:(UIApplication * _Nullable)application openURL:(NSURL * _Nullable)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> * _Nullable)options;
         [Export("application:openURL:options:")]
         bool Application([NullAllowed] UIApplication application, [NullAllowed] NSUrl url, [NullAllowed] NSDictionary<NSString, NSObject> options);
 
-        //// -(void)dispatchToIsolationQueue:(dispatch_block_t _Nonnull)initBlock;
-        //[Export("dispatchToIsolationQueue:")]
-        //void DispatchToIsolationQueue(dispatch_block_t initBlock);
+        // -(void)dispatchToIsolationQueue:(dispatch_block_t _Nonnull)initBlock;
+        // [Export("dispatchToIsolationQueue:")]
+        // void DispatchToIsolationQueue(dispatch_block_t initBlock);
+
+        // -(void)notifyNativeToInit;
+        [Export("notifyNativeToInit")]
+        void NotifyNativeToInit();
 
         // -(void)handlePushNotification:(NSDictionary * _Nullable)userInfo;
         [Export("handlePushNotification:")]
         void HandlePushNotification([NullAllowed] NSDictionary userInfo);
 
-        //// -(void)registerDeepLinkController:(UIViewController<BranchDeepLinkingController> * _Nullable)controller forKey:(NSString * _Nullable)key __attribute__((deprecated("This API is deprecated. Please use registerDeepLinkController: forKey: withOption:")));
-        //[Export("registerDeepLinkController:forKey:")]
-        //void RegisterDeepLinkController([NullAllowed] BranchDeepLinkingController controller, [NullAllowed] string key);
+        // -(void)registerDeepLinkController:(UIViewController<BranchDeepLinkingController> * _Nullable)controller forKey:(NSString * _Nullable)key __attribute__((deprecated("This API is deprecated. Please use registerDeepLinkController: forKey: withOption:")));
+        // [Export("registerDeepLinkController:forKey:")]
+        // void RegisterDeepLinkController([NullAllowed] BranchDeepLinkingController controller, [NullAllowed] string key);
 
-        //// -(void)registerDeepLinkController:(UIViewController<BranchDeepLinkingController> * _Nullable)controller forKey:(NSString * _Nullable)key withPresentation:(BNCViewControllerPresentationOption)option;
-        //[Export("registerDeepLinkController:forKey:withPresentation:")]
-        //void RegisterDeepLinkController([NullAllowed] BranchDeepLinkingController controller, [NullAllowed] string key, BNCViewControllerPresentationOption option);
+        // // -(void)registerDeepLinkController:(UIViewController<BranchDeepLinkingController> * _Nullable)controller forKey:(NSString * _Nullable)key withPresentation:(BNCViewControllerPresentationOption)option;
+        // [Export("registerDeepLinkController:forKey:withPresentation:")]
+        // void RegisterDeepLinkController([NullAllowed] BranchDeepLinkingController controller, [NullAllowed] string key, BNCViewControllerPresentationOption option);
 
-        // -(void)setDebug;
-        [Export("setDebug")]
-        void SetDebug();
+        // +(void)enableLogging;
+        [Static]
+        [Export("enableLogging")]
+        void EnableLogging();
+
+        // +(void)enableLoggingAtLevel:(BranchLogLevel)logLevel withCallback:(BranchLogCallback _Nullable)callback;
+        [Static]
+        [Export("enableLoggingAtLevel:withCallback:")]
+        void EnableLoggingAtLevel(BranchLogLevel logLevel, [NullAllowed] BranchLogCallback callback);
+
+        // -(void)useEUEndpoints;
+        [Export("useEUEndpoints")]
+        void UseEUEndpoints();
+
+        // +(void)setAPIUrl:(NSString * _Nonnull)url;
+        [Static]
+        [Export("setAPIUrl:")]
+        void SetAPIUrl(string url);
 
         // -(void)validateSDKIntegration;
         [Export("validateSDKIntegration")]
@@ -3434,45 +3355,49 @@ namespace IOSNativeBranch {
         [Export("setDeepLinkDebugMode:")]
         void SetDeepLinkDebugMode([NullAllowed] NSDictionary debugParams);
 
-        // TODO: rename C# versions
-        // -(void)addWhiteListedScheme:(NSString * _Nullable)scheme;
+        // -(void)addAllowedScheme:(NSString * _Nullable)scheme;
         [Export("addAllowedScheme:")]
-        void AddWhiteListedScheme([NullAllowed] string scheme);
+        void AddAllowedScheme([NullAllowed] string scheme);
 
-        // TODO: rename C# versions
-        // -(void)setWhiteListedSchemes:(NSArray * _Nullable)schemes;
+        // -(void)setAllowedSchemes:(NSArray * _Nullable)schemes;
         [Export("setAllowedSchemes:")]
-        //[Verify(StronglyTypedNSArray)]
-        void SetWhiteListedSchemes([NullAllowed] NSObject[] schemes);
+        void SetAllowedSchemes([NullAllowed] NSObject[] schemes);
 
-        // TODO: rename C# versions
-        // @property (copy) NSArray<NSString *> * _Nullable blackListURLRegex;
-        [NullAllowed, Export("urlPatternsToIgnore", ArgumentSemantic.Copy)]
-        string[] BlackListURLRegex { get; set; }
+        // -(void)setUrlPatternsToIgnore:(NSArray<NSString *> * _Nonnull)urlsToIgnore;
+        [Export("setUrlPatternsToIgnore:")]
+        void SetUrlPatternsToIgnore(string[] urlsToIgnore);
 
-        // -(void)registerFacebookDeepLinkingClass:(id _Nonnull)FBSDKAppLinkUtility;
-        [Export("registerFacebookDeepLinkingClass:")]
-        void RegisterFacebookDeepLinkingClass(NSObject FBSDKAppLinkUtility);
-
-        // -(void)delayInitToCheckForSearchAds;
-        [Export("delayInitToCheckForSearchAds")]
-        void DelayInitToCheckForSearchAds();
-
-        // -(void)useLongerWaitForAppleSearchAds;
-        [Export("useLongerWaitForAppleSearchAds")]
-        void UseLongerWaitForAppleSearchAds();
-
-        // -(void)ignoreAppleSearchAdsTestData;
-        [Export("ignoreAppleSearchAdsTestData")]
-        void IgnoreAppleSearchAdsTestData();
-
-        // - (void)enableLogging;
-        [Export("enableLogging")]
-        void EnableLogging();
-
-        // - (void)checkPasteboardOnInstall;
+        // -(void)checkPasteboardOnInstall;
         [Export("checkPasteboardOnInstall")]
         void CheckPasteboardOnInstall();
+
+        // -(BOOL)willShowPasteboardToast;
+        [Export("willShowPasteboardToast")]
+        bool WillShowPasteboardToast { get; }
+
+        // -(void)setAppClipAppGroup:(NSString * _Nonnull)appGroup;
+        [Export("setAppClipAppGroup:")]
+        void SetAppClipAppGroup(string appGroup);
+
+        // -(void)handleATTAuthorizationStatus:(NSUInteger)status;
+        [Export("handleATTAuthorizationStatus:")]
+        void HandleATTAuthorizationStatus(nuint status);
+
+        // -(void)setSKAdNetworkCalloutMaxTimeSinceInstall:(NSTimeInterval)maxTimeInterval __attribute__((deprecated("This is no longer supported for iOS 16.1+ - SKAN4.0")));
+        [Export("setSKAdNetworkCalloutMaxTimeSinceInstall:")]
+        void SetSKAdNetworkCalloutMaxTimeSinceInstall(double maxTimeInterval);
+
+        // -(void)addFacebookPartnerParameterWithName:(NSString * _Nonnull)name value:(NSString * _Nonnull)value;
+        [Export("addFacebookPartnerParameterWithName:value:")]
+        void AddFacebookPartnerParameterWithName(string name, string value);
+
+        // -(void)addSnapPartnerParameterWithName:(NSString * _Nonnull)name value:(NSString * _Nonnull)value;
+        [Export("addSnapPartnerParameterWithName:value:")]
+        void AddSnapPartnerParameterWithName(string name, string value);
+
+        // -(void)clearPartnerParameters;
+        [Export("clearPartnerParameters")]
+        void ClearPartnerParameters();
 
         // -(void)setRetryInterval:(NSTimeInterval)retryInterval;
         [Export("setRetryInterval:")]
@@ -3486,95 +3411,70 @@ namespace IOSNativeBranch {
         [Export("setNetworkTimeout:")]
         void SetNetworkTimeout(double timeout);
 
-        // -(void)disableCookieBasedMatching __attribute__((deprecated("Feature removed.  Did not work on iOS 11+")));
-        [Export("disableCookieBasedMatching")]
-        void DisableCookieBasedMatching();
-
-        // -(void)accountForFacebookSDKPreventingAppLaunch __attribute__((deprecated("Please ensure application:didFinishLaunchingWithOptions: always returns YES/true instead of using this method. It will be removed in a future release.")));
-        [Export("accountForFacebookSDKPreventingAppLaunch")]
-        void AccountForFacebookSDKPreventingAppLaunch();
-
-        // -(void)suppressWarningLogs;
-        [Export("suppressWarningLogs")]
-        void SuppressWarningLogs();
+        // -(void)disableAdNetworkCallouts:(BOOL)disableCallouts;
+        [Export("disableAdNetworkCallouts:")]
+        void DisableAdNetworkCallouts(bool disableCallouts);
 
         // -(void)registerPluginName:(NSString * _Nonnull)name version:(NSString * _Nonnull)version;
         [Export("registerPluginName:version:")]
         void RegisterPluginName(string name, string version);
 
-        // -(void)setRequestMetadataKey:(NSString * _Nonnull)key value:(id _Nullable)value;
+        // +(BOOL)isBranchLink:(NSString * _Nonnull)urlString;
+        [Static]
+        [Export("isBranchLink:")]
+        bool IsBranchLink(string urlString);
+
+        // -(void)setRequestMetadataKey:(NSString * _Nonnull)key value:(NSString _Nullable)value;
         [Export("setRequestMetadataKey:value:")]
         void SetRequestMetadataKey(string key, [NullAllowed] string value);
 
-        // -(void)enableDelayedInit __attribute__((deprecated("No longer valid with new init process")));
-        [Export("enableDelayedInit")]
-        void EnableDelayedInit();
-
-        // -(void)disableDelayedInit __attribute__((deprecated("No longer valid with new init process")));
-        [Export("disableDelayedInit")]
-        void DisableDelayedInit();
-
-        // -(NSURL * _Nullable)getUrlForOnboardingWithRedirectUrl:(NSString * _Nullable)redirectUrl __attribute__((deprecated("Feature removed.  Did not work on iOS 11+")));
-        [Export("getUrlForOnboardingWithRedirectUrl:")]
-        [return: NullAllowed]
-        NSUrl GetUrlForOnboardingWithRedirectUrl([NullAllowed] string redirectUrl);
-
-        // -(void)resumeInit __attribute__((deprecated("Feature removed.  Did not work on iOS 11+")));
-        [Export("resumeInit")]
-        void ResumeInit();
-
-        // -(void)setInstallRequestDelay:(NSInteger)installRequestDelay __attribute__((deprecated("No longer valid with new init process")));
-        [Export("setInstallRequestDelay:")]
-        void SetInstallRequestDelay(nint installRequestDelay);
-
         // +(BOOL)trackingDisabled;
-        // +(void)setTrackingDisabled:(BOOL)disabled;
+        // +(void)setTrackingDisabled:(BOOL)disabled __attribute__((deprecated("This method has been deprecated. Use `setConsumerProtectionAttributionLevel:` with `BranchAttributionLevelNone` instead.")));
         [Static]
         [Export("trackingDisabled")]
-        //[Verify(MethodToProperty)]
         bool TrackingDisabled { get; set; }
 
+        // +(void)setReferrerGbraidValidityWindow:(NSTimeInterval)validityWindow;
+        [Static]
+        [Export("setReferrerGbraidValidityWindow:")]
+        void SetReferrerGbraidValidityWindow(double validityWindow);
+
+        // +(void)setDMAParamsForEEA:(BOOL)eeaRegion AdPersonalizationConsent:(BOOL)adPersonalizationConsent AdUserDataUsageConsent:(BOOL)adUserDataUsageConsent;
+        [Static]
+        [Export("setDMAParamsForEEA:AdPersonalizationConsent:AdUserDataUsageConsent:")]
+        void SetDMAParamsForEEA(bool eeaRegion, bool adPersonalizationConsent, bool adUserDataUsageConsent);
+
+        // -(void)setConsumerProtectionAttributionLevel:(BranchAttributionLevel _Nonnull)level;
+        [Export("setConsumerProtectionAttributionLevel:")]
+        void SetConsumerProtectionAttributionLevel(string level);
+
         // -(BranchUniversalObject * _Nullable)getFirstReferringBranchUniversalObject;
-        [Export("getFirstReferringBranchUniversalObject")]
-        //[Verify(MethodToProperty)]
-        //BranchUniversalObject FirstReferringBranchUniversalObject { get; }
-        BranchUniversalObject FirstReferringBranchUniversalObject();
+        [NullAllowed, Export("getFirstReferringBranchUniversalObject")]
+        BranchUniversalObject FirstReferringBranchUniversalObject { get; }
 
         // -(BranchLinkProperties * _Nullable)getFirstReferringBranchLinkProperties;
-        [Export("getFirstReferringBranchLinkProperties")]
-        //[Verify(MethodToProperty)]
-        //BranchLinkProperties FirstReferringBranchLinkProperties { get; }
-        BranchLinkProperties FirstReferringBranchLinkProperties();
+        [NullAllowed, Export("getFirstReferringBranchLinkProperties")]
+        BranchLinkProperties FirstReferringBranchLinkProperties { get; }
 
         // -(NSDictionary * _Nullable)getFirstReferringParams;
-        [Export("getFirstReferringParams")]
-        //[Verify(MethodToProperty)]
-        //NSDictionary FirstReferringParams { get; }
-        NSDictionary FirstReferringParams();
+        [NullAllowed, Export("getFirstReferringParams")]
+        NSDictionary FirstReferringParams { get; }
 
         // -(BranchUniversalObject * _Nullable)getLatestReferringBranchUniversalObject;
-        [Export("getLatestReferringBranchUniversalObject")]
-        //[Verify(MethodToProperty)]
-        //BranchUniversalObject LatestReferringBranchUniversalObject { get; }
-        BranchUniversalObject LatestReferringBranchUniversalObject();
+        [NullAllowed, Export("getLatestReferringBranchUniversalObject")]
+        BranchUniversalObject LatestReferringBranchUniversalObject { get; }
 
         // -(BranchLinkProperties * _Nullable)getLatestReferringBranchLinkProperties;
-        [Export("getLatestReferringBranchLinkProperties")]
-        //[Verify(MethodToProperty)]
-        //BranchLinkProperties LatestReferringBranchLinkProperties { get; }
-        BranchLinkProperties LatestReferringBranchLinkProperties();
+        [NullAllowed, Export("getLatestReferringBranchLinkProperties")]
+        BranchLinkProperties LatestReferringBranchLinkProperties { get; }
 
         // -(NSDictionary * _Nullable)getLatestReferringParams;
-        [Export("getLatestReferringParams")]
-        //[Verify(MethodToProperty)]
-        //NSDictionary LatestReferringParams { get; }
-        NSDictionary LatestReferringParams();
+        [NullAllowed, Export("getLatestReferringParams")]
+        NSDictionary LatestReferringParams { get; }
 
         // -(NSDictionary * _Nullable)getLatestReferringParamsSynchronous;
-        [Export("getLatestReferringParamsSynchronous")]
-        //[Verify(MethodToProperty)]
-        //NSDictionary LatestReferringParamsSynchronous { get; }
-        NSDictionary LatestReferringParamsSynchronous();
+        [NullAllowed, Export("getLatestReferringParamsSynchronous")]
+        NSDictionary LatestReferringParamsSynchronous { get; }
 
         // -(void)resetUserSession;
         [Export("resetUserSession")]
@@ -3582,7 +3482,6 @@ namespace IOSNativeBranch {
 
         // -(BOOL)isUserIdentified;
         [Export("isUserIdentified")]
-        //[Verify(MethodToProperty)]
         bool IsUserIdentified { get; }
 
         // -(void)setIdentity:(NSString * _Nullable)userId;
@@ -3601,33 +3500,12 @@ namespace IOSNativeBranch {
         [Export("logoutWithCallback:")]
         void LogoutWithCallback([NullAllowed] callbackWithStatus callback);
 
-        // -(void)userCompletedAction:(NSString * _Nullable)action;
-        [Export("userCompletedAction:")]
-        void UserCompletedAction([NullAllowed] string action);
-
-        // -(void)userCompletedAction:(NSString * _Nullable)action withState:(NSDictionary * _Nullable)state;
-        [Export("userCompletedAction:withState:")]
-        void UserCompletedAction([NullAllowed] string action, [NullAllowed] NSDictionary state);
-
-        // -(void)userCompletedAction:(NSString * _Nullable)action withState:(NSDictionary * _Nullable)state withDelegate:(id _Nullable)branchViewCallback __attribute__((deprecated("This API is deprecated. Please use userCompletedAction:action:state instead.")));
-        [Export("userCompletedAction:withState:withDelegate:")]
-        void UserCompletedAction([NullAllowed] string action, [NullAllowed] NSDictionary state, [NullAllowed] NSObject branchViewCallback);
-
-        // -(void)sendCommerceEvent:(BNCCommerceEvent * _Nonnull)commerceEvent metadata:(NSDictionary<NSString *,id> * _Nonnull)metadata withCompletion:(void (^ _Nonnull)(NSDictionary * _Nullable, NSError * _Nullable))completion __attribute__((deprecated("Please use BranchEvent to track commerce events.")));
-        [Export("sendCommerceEvent:metadata:withCompletion:")]
-        void SendCommerceEvent(BNCCommerceEvent commerceEvent, NSDictionary<NSString, NSObject> metadata, Action<NSDictionary, NSError> completion);
-
-        // -(void)crossPlatformIdDataWithCompletion:(void (^ _Nonnull)(BranchCrossPlatformID * _Nullable))completion;
-        [Export("crossPlatformIdDataWithCompletion:")]
-        void CrossPlatformIdDataWithCompletion(Action<BranchCrossPlatformID> completion);
-
-        // -(void)lastAttributedTouchDataWithAttributionWindow:(NSInteger)window completion:(void (^ _Nonnull)(BranchLastAttributedTouchData * _Nullable))completion;
+        // -(void)lastAttributedTouchDataWithAttributionWindow:(NSInteger)window completion:(void (^ _Nonnull)(BranchLastAttributedTouchData * _Nullable, NSError * _Nullable))completion;
         [Export("lastAttributedTouchDataWithAttributionWindow:completion:")]
-        void LastAttributedTouchDataWithAttributionWindow(nint window, Action<BranchLastAttributedTouchData> completion);
+        void LastAttributedTouchDataWithAttributionWindow(nint window, Action<BranchLastAttributedTouchData, NSError> completion);
 
         // -(NSString * _Nonnull)getShortURL;
         [Export("getShortURL")]
-        //[Verify(MethodToProperty)]
         string ShortURL { get; }
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params;
@@ -3656,43 +3534,35 @@ namespace IOSNativeBranch {
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage);
+        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage);
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andAlias:(NSString * _Nullable)alias;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andAlias:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias);
+        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias);
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andAlias:(NSString * _Nullable)alias ignoreUAString:(NSString * _Nullable)ignoreUAString;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andAlias:ignoreUAString:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias, [NullAllowed] string ignoreUAString);
+        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias, [NullAllowed] string ignoreUAString);
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andCampaign:(NSString * _Nullable)campaign andAlias:(NSString * _Nullable)alias ignoreUAString:(NSString * _Nullable)ignoreUAString forceLinkCreation:(BOOL)forceLinkCreation;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andCampaign:andAlias:ignoreUAString:forceLinkCreation:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string campaign, [NullAllowed] string alias, [NullAllowed] string ignoreUAString, bool forceLinkCreation);
+        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string campaign, [NullAllowed] string alias, [NullAllowed] string ignoreUAString, bool forceLinkCreation);
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andType:(BranchLinkType)type;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andType:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, BranchLinkType type);
+        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, BranchLinkType type);
 
         // -(NSString * _Nonnull)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andMatchDuration:(NSUInteger)duration;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andMatchDuration:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, nuint duration);
+        string GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, nuint duration);
 
         // -(NSString * _Nonnull)getShortUrlWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andAlias:(NSString * _Nullable)alias andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andMatchDuration:(NSUInteger)duration;
         [Export("getShortUrlWithParams:andTags:andAlias:andChannel:andFeature:andStage:andMatchDuration:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string alias, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, nuint duration);
+        string GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string alias, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, nuint duration);
 
         // -(NSString * _Nonnull)getShortUrlWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andAlias:(NSString * _Nullable)alias andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andCampaign:(id)campaign andMatchDuration:(NSUInteger)duration;
         [Export("getShortUrlWithParams:andTags:andAlias:andChannel:andFeature:andStage:andCampaign:andMatchDuration:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string alias, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, NSObject campaign, nuint duration);
+        string GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string alias, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, NSObject campaign, nuint duration);
 
         // -(NSString * _Nonnull)getLongURLWithParams:(NSDictionary * _Nullable)params;
         [Export("getLongURLWithParams:")]
@@ -3708,8 +3578,7 @@ namespace IOSNativeBranch {
 
         // -(NSString * _Nonnull)getLongURLWithParams:(NSDictionary * _Nullable)params andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andTags:(NSArray * _Nullable)tags;
         [Export("getLongURLWithParams:andFeature:andStage:andTags:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetLongURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] NSObject[] tags);
+        string GetLongURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string[] tags);
 
         // -(NSString * _Nonnull)getLongURLWithParams:(NSDictionary * _Nullable)params andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andAlias:(NSString * _Nullable)alias;
         [Export("getLongURLWithParams:andFeature:andStage:andAlias:")]
@@ -3717,8 +3586,11 @@ namespace IOSNativeBranch {
 
         // -(NSString * _Nonnull)getLongURLWithParams:(NSDictionary * _Nullable)params andChannel:(NSString * _Nullable)channel andTags:(NSArray * _Nullable)tags andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andAlias:(NSString * _Nullable)alias;
         [Export("getLongURLWithParams:andChannel:andTags:andFeature:andStage:andAlias:")]
-        //[Verify(StronglyTypedNSArray)]
-        string GetLongURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string channel, [NullAllowed] NSObject[] tags, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias);
+        string GetLongURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string channel, [NullAllowed] string[] tags, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias);
+
+        // -(NSString * _Nonnull)getLongAppLinkURLWithParams:(NSDictionary * _Nonnull)params andChannel:(NSString * _Nullable)channel andTags:(NSArray * _Nonnull)tags andFeature:(NSString * _Nonnull)feature andStage:(NSString * _Nonnull)stage andAlias:(NSString * _Nonnull)alias;
+        [Export("getLongAppLinkURLWithParams:andChannel:andTags:andFeature:andStage:andAlias:")]
+        string GetLongAppLinkURLWithParams(NSDictionary @params, [NullAllowed] string channel, string[] tags, string feature, string stage, string alias);
 
         // -(void)getShortURLWithCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortURLWithCallback:")]
@@ -3750,33 +3622,27 @@ namespace IOSNativeBranch {
 
         // -(void)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andCallback:")]
-        //[Verify(StronglyTypedNSArray)]
-        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] callbackWithUrl callback);
+        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] callbackWithUrl callback);
 
         // -(void)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andAlias:(NSString * _Nullable)alias andCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andAlias:andCallback:")]
-        //[Verify(StronglyTypedNSArray)]
-        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias, [NullAllowed] callbackWithUrl callback);
+        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string alias, [NullAllowed] callbackWithUrl callback);
 
         // -(void)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andType:(BranchLinkType)type andCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andType:andCallback:")]
-        //[Verify(StronglyTypedNSArray)]
-        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, BranchLinkType type, [NullAllowed] callbackWithUrl callback);
+        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, BranchLinkType type, [NullAllowed] callbackWithUrl callback);
 
         // -(void)getShortURLWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andMatchDuration:(NSUInteger)duration andCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortURLWithParams:andTags:andChannel:andFeature:andStage:andMatchDuration:andCallback:")]
-        //[Verify(StronglyTypedNSArray)]
-        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, nuint duration, [NullAllowed] callbackWithUrl callback);
+        void GetShortURLWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, nuint duration, [NullAllowed] callbackWithUrl callback);
 
         // -(void)getShortUrlWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andAlias:(NSString * _Nullable)alias andMatchDuration:(NSUInteger)duration andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortUrlWithParams:andTags:andAlias:andMatchDuration:andChannel:andFeature:andStage:andCallback:")]
-        //[Verify(StronglyTypedNSArray)]
-        void GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string alias, nuint duration, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] callbackWithUrl callback);
+        void GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string alias, nuint duration, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] callbackWithUrl callback);
 
         // -(void)getShortUrlWithParams:(NSDictionary * _Nullable)params andTags:(NSArray * _Nullable)tags andAlias:(NSString * _Nullable)alias andMatchDuration:(NSUInteger)duration andChannel:(NSString * _Nullable)channel andFeature:(NSString * _Nullable)feature andStage:(NSString * _Nullable)stage andCampaign:(NSString * _Nullable)campaign andCallback:(callbackWithUrl _Nullable)callback;
         [Export("getShortUrlWithParams:andTags:andAlias:andMatchDuration:andChannel:andFeature:andStage:andCampaign:andCallback:")]
-        //[Verify(StronglyTypedNSArray)]
-        void GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] NSObject[] tags, [NullAllowed] string alias, nuint duration, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string campaign, [NullAllowed] callbackWithUrl callback);
+        void GetShortUrlWithParams([NullAllowed] NSDictionary @params, [NullAllowed] string[] tags, [NullAllowed] string alias, nuint duration, [NullAllowed] string channel, [NullAllowed] string feature, [NullAllowed] string stage, [NullAllowed] string campaign, [NullAllowed] callbackWithUrl callback);
 
         // -(void)getSpotlightUrlWithParams:(NSDictionary * _Nonnull)params callback:(callbackWithParams _Nonnull)callback;
         [Export("getSpotlightUrlWithParams:callback:")]
@@ -3846,17 +3712,17 @@ namespace IOSNativeBranch {
         [Export("indexOnSpotlightWithBranchUniversalObject:linkProperties:completion:")]
         void IndexOnSpotlightWithBranchUniversalObject(BranchUniversalObject universalObject, [NullAllowed] BranchLinkProperties linkProperties, Action<BranchUniversalObject, NSString, NSError> completion);
 
-        //// -(void)indexOnSpotlightUsingSearchableItems:(NSArray<BranchUniversalObject *> * _Nonnull)universalObjects completion:(void (^ _Nonnull)(NSArray<BranchUniversalObject *> * _Nonnull, NSError * _Nonnull))completion;
-        //[Export("indexOnSpotlightUsingSearchableItems:completion:")]
-        //void IndexOnSpotlightUsingSearchableItems(BranchUniversalObject[] universalObjects, Action<NSArray<BranchUniversalObject>, NSError> completion);
+        // // -(void)indexOnSpotlightUsingSearchableItems:(NSArray<BranchUniversalObject *> * _Nonnull)universalObjects completion:(void (^ _Nonnull)(NSArray<BranchUniversalObject *> * _Nonnull, NSError * _Nonnull))completion;
+        // [Export("indexOnSpotlightUsingSearchableItems:completion:")]
+        // void IndexOnSpotlightUsingSearchableItems(BranchUniversalObject[] universalObjects, Action<NSArray<BranchUniversalObject>, NSError> completion);
 
         // -(void)removeSearchableItemWithBranchUniversalObject:(BranchUniversalObject * _Nonnull)universalObject callback:(void (^ _Nullable)(NSError * _Nullable))completion;
         [Export("removeSearchableItemWithBranchUniversalObject:callback:")]
         void RemoveSearchableItemWithBranchUniversalObject(BranchUniversalObject universalObject, [NullAllowed] Action<NSError> completion);
 
-        // -(void)removeSearchableItemsWithBranchUniversalObjects:(NSArray<BranchUniversalObject *> * _Nonnull)universalObjects callback:(void (^ _Nullable)(NSError * _Nullable))completion;
-        [Export("removeSearchableItemsWithBranchUniversalObjects:callback:")]
-        void RemoveSearchableItemsWithBranchUniversalObjects(BranchUniversalObject[] universalObjects, [NullAllowed] Action<NSError> completion);
+        // // -(void)removeSearchableItemsWithBranchUniversalObjects:(NSArray<BranchUniversalObject *> * _Nonnull)universalObjects callback:(void (^ _Nullable)(NSError * _Nullable))completion;
+        // [Export("removeSearchableItemsWithBranchUniversalObjects:callback:")]
+        // void RemoveSearchableItemsWithBranchUniversalObjects(BranchUniversalObject[] universalObjects, [NullAllowed] Action<NSError> completion);
 
         // -(void)removeAllPrivateContentFromSpotLightWithCallback:(void (^ _Nullable)(NSError * _Nullable))completion;
         [Export("removeAllPrivateContentFromSpotLightWithCallback:")]
@@ -3864,7 +3730,7 @@ namespace IOSNativeBranch {
 
         // -(id _Nonnull)initWithInterface:(BNCServerInterface * _Nonnull)interface queue:(BNCServerRequestQueue * _Nonnull)queue cache:(BNCLinkCache * _Nonnull)cache preferenceHelper:(BNCPreferenceHelper * _Nonnull)preferenceHelper key:(NSString * _Nonnull)key;
         [Export("initWithInterface:queue:cache:preferenceHelper:key:")]
-        IntPtr Constructor(BNCServerInterface @interface, BNCServerRequestQueue queue, BNCLinkCache cache, BNCPreferenceHelper preferenceHelper, string key);
+        NativeHandle Constructor(BNCServerInterface @interface, BNCServerRequestQueue queue, BNCLinkCache cache, BNCPreferenceHelper preferenceHelper, string key);
 
         // -(void)registerViewWithParams:(NSDictionary * _Nonnull)params andCallback:(callbackWithParams _Nonnull)callback __attribute__((deprecated("This API is deprecated. Please use BranchEvent:BranchStandardEventViewItem instead.")));
         [Export("registerViewWithParams:andCallback:")]
@@ -3878,11 +3744,11 @@ namespace IOSNativeBranch {
         [Export("sendServerRequestWithoutSession:")]
         void SendServerRequestWithoutSession(BNCServerRequest request);
 
-        // @property (copy, nonatomic) void (^ _Nonnull)(NSDictionary * _Nullable, NSError * _Nullable) sessionInitWithParamsCallback;
+        // @property (copy, nonatomic) DEPRECATED_ATTRIBUTE void (^)(NSDictionary * _Nullable, NSError * _Nullable) sessionInitWithParamsCallback __attribute__((deprecated("")));
         [Export("sessionInitWithParamsCallback", ArgumentSemantic.Copy)]
         Action<NSDictionary, NSError> SessionInitWithParamsCallback { get; set; }
 
-        // @property (copy, nonatomic) void (^ _Nonnull)(BranchUniversalObject * _Nullable, BranchLinkProperties * _Nullable, NSError * _Nullable) sessionInitWithBranchUniversalObjectCallback;
+        // @property (copy, nonatomic) DEPRECATED_ATTRIBUTE void (^)(BranchUniversalObject * _Nullable, BranchLinkProperties * _Nullable, NSError * _Nullable) sessionInitWithBranchUniversalObjectCallback __attribute__((deprecated("")));
         [Export("sessionInitWithBranchUniversalObjectCallback", ArgumentSemantic.Copy)]
         Action<BranchUniversalObject, BranchLinkProperties, NSError> SessionInitWithBranchUniversalObjectCallback { get; set; }
 
@@ -3893,6 +3759,11 @@ namespace IOSNativeBranch {
         // -(void)clearNetworkQueue;
         [Export("clearNetworkQueue")]
         void ClearNetworkQueue();
+
+        // -(void)passPasteItemProviders:(NSArray<NSItemProvider *> * _Nonnull)itemProviders __attribute__((availability(ios, introduced=16))) __attribute__((availability(maccatalyst, introduced=16)));
+        // [MacCatalyst(16, 0), iOS(16, 0)]
+        // [Export("passPasteItemProviders:")]
+        // void PassPasteItemProviders(NSItemProvider[] itemProviders);
     }
 
 }

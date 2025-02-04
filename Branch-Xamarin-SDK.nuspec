@@ -4,7 +4,7 @@
     <id>Branch-Xamarin-Linking-SDK</id>
     <title>Branch Xamarin SDK</title>
     <summary>Hosted deep links for your Xamarin-based Android or iOS app by Branch</summary>
-    <version>9.0.1</version>
+    <version>10.0.0</version>
     <authors>Branch Metrics, Inc.</authors>
     <owners>Branch Metrics, Inc.</owners>
     <projectUrl>https://github.com/BranchMetrics/xamarin-branch-deep-linking-attribution</projectUrl>
@@ -13,14 +13,14 @@
     <copyright>Copyright 2020 Branch Metrics, Inc.</copyright>
     <tags>Xamarin Branch deep linking tracking measurement iOS Android sharing referral invite analytics</tags>
     <dependencies>
-      <group targetFramework="net6.0" >
+      <group targetFramework="net9.0" >
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
-      <group targetFramework="net6.0-android33" >
+      <group targetFramework="net9.0-android34" >
         <dependency id="Newtonsoft.Json" version="13.0.3" />
 	      <dependency id="Xamarin.Android.Binding.InstallReferrer" version="2.2.0" />
       </group>
-      <group targetFramework="net6.0-ios11.0" >
+      <group targetFramework="net9.0-ios11.0" >
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
     </dependencies>    
@@ -32,19 +32,19 @@
     <file src="branch_icon.png" target="" />
 
     <!-- Android Binding -->
-    <file src="BranchSDK.AndroidBinding/bin/Release/net6.0-android/BranchSDK.AndroidBinding.dll" target="lib/net6.0-android33" />
-    <file src="BranchSDK.AndroidBinding/bin/Release/net6.0-android/BranchSDK.AndroidBinding.xml" target="lib/net6.0-android33" />
-    <file src="BranchSDK.AndroidBinding/bin/Release/net6.0-android/BranchSDK.AndroidBinding.aar" target="lib/net6.0-android33" />
+    <file src="BranchSDK.AndroidBinding/bin/Release/net9.0-android/BranchSDK.AndroidBinding.dll" target="lib/net9.0-android34" />
+    <file src="BranchSDK.AndroidBinding/bin/Release/net9.0-android/BranchSDK.AndroidBinding.xml" target="lib/net9.0-android34" />
+    <file src="BranchSDK.AndroidBinding/bin/Release/net9.0-android/BranchSDK.AndroidBinding.aar" target="lib/net9.0-android34" />
 
     <!-- iOS Binding -->
-    <file src="BranchSDK.iOSBinding/bin/Release/net6.0-ios/BranchSDK.iOSBinding.dll" target="lib/net6.0-iOS11.0" />
-    <file src="BranchSDK.iOSBinding/bin/Release/net6.0-ios/BranchSDK.iOSBinding.resources.zip" target="lib/net6.0-iOS11.0" />
+    <file src="BranchSDK.iOSBinding/bin/Release/net9.0-ios/BranchSDK.iOSBinding.dll" target="lib/net9.0-iOS11.0" />
+    <file src="BranchSDK.iOSBinding/bin/Release/net9.0-ios/BranchSDK.iOSBinding.resources.zip" target="lib/net9.0-iOS11.0" />
 
     <!-- Branch SDK  -->
-    <file src="BranchSDK/bin/Release/net6.0-android/BranchSDK.dll" target="lib/net6.0-android33" />
-    <file src="BranchSDK/bin/Release/net6.0-android/BranchSDK.xml" target="lib/net6.0-android33" />
-    <file src="BranchSDK/bin/Release/net6.0-ios/BranchSDK.dll" target="lib/net6.0-ios11.0" />
-    <file src="BranchSDK/bin/Release/net6.0/BranchSDK.dll" target="lib/net6.0" />
+    <file src="BranchSDK/bin/Release/net9.0-android/BranchSDK.dll" target="lib/net9.0-android34" />
+    <file src="BranchSDK/bin/Release/net9.0-android/BranchSDK.xml" target="lib/net9.0-android34" />
+    <file src="BranchSDK/bin/Release/net9.0-ios/BranchSDK.dll" target="lib/net9.0-ios11.0" />
+    <file src="BranchSDK/bin/Release/net9.0/BranchSDK.dll" target="lib/net9.0" />
 
   </files>
 </package>

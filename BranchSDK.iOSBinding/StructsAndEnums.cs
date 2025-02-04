@@ -35,18 +35,12 @@ namespace IOSNativeBranch
     }
 
     [Native]
-    public enum BNCLogLevel : long
+    public enum BranchLogLevel : ulong
     {
-        All = 0,
-        DebugSDK = All,
-        BreakPoint,
+        Verbose,
         Debug,
         Warning,
-        Error,
-        Assert,
-        Log,
-        None,
-        Max
+        Error
     }
 
     [Native]
@@ -72,6 +66,13 @@ namespace IOSNativeBranch
         Interstitial,
         RewardedVideo,
         Native
+    }
+
+    [Native]
+    public enum BranchQRCodeImageFormat : long
+    {
+        Png,
+        Jpeg
     }
 }
 

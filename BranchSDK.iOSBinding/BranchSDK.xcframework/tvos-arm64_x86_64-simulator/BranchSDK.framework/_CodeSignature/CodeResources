@@ -6,11 +6,11 @@
 	<dict>
 		<key>Headers/BNCCallbacks.h</key>
 		<data>
-		5u52z7/Y9nEQ/41Imd3Gl0n0DWw=
+		qH9Le3B3R8/gq0fncUjfYJZahpQ=
 		</data>
-		<key>Headers/BNCCommerceEvent.h</key>
+		<key>Headers/BNCCurrency.h</key>
 		<data>
-		4vQOSyekPRIbRhopm8y+ectKxtM=
+		DWdII+foPbsuBtA9KR3lG+jtueU=
 		</data>
 		<key>Headers/BNCInitSessionResponse.h</key>
 		<data>
@@ -30,7 +30,11 @@
 		</data>
 		<key>Headers/BNCPreferenceHelper.h</key>
 		<data>
-		/O5jV+XKwi8LWyJs/TG38OXxrjc=
+		PZymd2rSpEd8bkGpFDpEGFUVn0s=
+		</data>
+		<key>Headers/BNCProductCategory.h</key>
+		<data>
+		AaGiV3INyAq5tEZ9T5iXLLQKK8c=
 		</data>
 		<key>Headers/BNCServerInterface.h</key>
 		<data>
@@ -38,11 +42,11 @@
 		</data>
 		<key>Headers/BNCServerRequest.h</key>
 		<data>
-		yNbh9Vnv+yhedOGjG8mg9jHeWBs=
+		qki1SS7nFwijD4fUUF8QQuxf/Os=
 		</data>
 		<key>Headers/BNCServerRequestQueue.h</key>
 		<data>
-		H8WsgzAU5tyWCxFlIossaA/GWVs=
+		FTaiXokWfwT7bBiMUgQ/P97LGBk=
 		</data>
 		<key>Headers/BNCServerResponse.h</key>
 		<data>
@@ -50,23 +54,27 @@
 		</data>
 		<key>Headers/Branch.h</key>
 		<data>
-		q3GJJ0OwYl4uNhb+Q26qoLb/RLs=
+		lGj2dDTKNlNFORrLx6RG0HGlJZs=
 		</data>
-		<key>Headers/BranchCrossPlatformID.h</key>
+		<key>Headers/BranchActivityItemProvider.h</key>
 		<data>
-		Hc8PaYITE94OKttr2l1HRPmpUcA=
+		nh5gW/dP5SiHNvJrj3NSMqg5xbY=
+		</data>
+		<key>Headers/BranchCSSearchableItemAttributeSet.h</key>
+		<data>
+		vZGZHAAgrgiE6MIktsv6bzYVD4c=
 		</data>
 		<key>Headers/BranchDeepLinkingController.h</key>
 		<data>
-		Bdbq5rXsooZqObneX+royX3FHmI=
+		NPl5KRUFgo5TOEBosezgXgVe+9k=
 		</data>
 		<key>Headers/BranchDelegate.h</key>
 		<data>
-		LpX0xLjvKkIiA8pAWqwp5VRj+FU=
+		omZ+TWvnhqLp1JgQLtumLeWW6T8=
 		</data>
 		<key>Headers/BranchEvent.h</key>
 		<data>
-		1lSPBKT4gNpmfHrpW7kIBgFFcIw=
+		9AKheC/dhBmcW6/nsjs/jYVVPuE=
 		</data>
 		<key>Headers/BranchLastAttributedTouchData.h</key>
 		<data>
@@ -76,9 +84,13 @@
 		<data>
 		hIsJ+kneDBHZSicC/C4fMiqTjug=
 		</data>
+		<key>Headers/BranchLogger.h</key>
+		<data>
+		UNufxjMcTuaVMOzLOD+bKANLtzE=
+		</data>
 		<key>Headers/BranchPluginSupport.h</key>
 		<data>
-		XEp7jRVPmrcMUfEUQc6yFFK4bSw=
+		hEgk02337B5WqXwPZnVZD5T3HNA=
 		</data>
 		<key>Headers/BranchQRCode.h</key>
 		<data>
@@ -86,23 +98,31 @@
 		</data>
 		<key>Headers/BranchSDK.h</key>
 		<data>
-		6AVWUp76xyqMPhXJzt0YQv7Tsmg=
+		Yw6kXS8KqhWa45VHkXqaBl9odtw=
 		</data>
 		<key>Headers/BranchScene.h</key>
 		<data>
-		n9P1DKQI0pWvVG/lH3UB5vWN+1A=
+		PLEvt9VN5Be/WgPV/jEbpzG/yJE=
+		</data>
+		<key>Headers/BranchShareLink.h</key>
+		<data>
+		3wDuFCHXh3zBCHsWFRQJWmXJ3mw=
 		</data>
 		<key>Headers/BranchUniversalObject.h</key>
 		<data>
-		5cwJS8J+hqodwWVgUUO7GIGX/0M=
+		ITbjVjz2msll4Cf13fO+9AhAp/U=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		inUsbSJCgPI/KGou251yJwwaOWo=
+		Y/QJ86rVf631Fk0Di0dxMwNbCqA=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
 		JQZO2rYXcD4A+2L/UXX47qXxX80=
+		</data>
+		<key>PrivacyInfo.xcprivacy</key>
+		<data>
+		Hx6pUuco6V0fqBEtxF7cHpjY2D8=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -111,14 +131,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			5kunN/MhAv5Ja5QLUszrNpppkSgQWXVS1MawgeFadmM=
+			ZQHBeODx5vwfSDqFeFZ3mPuYHoNkf9ovP93FSIGK/hk=
 			</data>
 		</dict>
-		<key>Headers/BNCCommerceEvent.h</key>
+		<key>Headers/BNCCurrency.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Do40zvRKw24xq8DYe6FSBxyHKheGq6Yry9jJzCnQ51k=
+			435BEvCmHoJyMnWBQiuR7ehrIyUqorDzJuKvwYoYBgg=
 			</data>
 		</dict>
 		<key>Headers/BNCInitSessionResponse.h</key>
@@ -153,7 +173,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			/BmZzXg9EWkQfq6oqsLwfUttHerSQdj/jiLjZ+Rfxnw=
+			pI/mYHdGsRIYfjH1UOjGd0T0GDNdyP18OaHVdAdLyjQ=
+			</data>
+		</dict>
+		<key>Headers/BNCProductCategory.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			IhR667CAZ5BhpEM92jhwKpNPnx3Vikwx/+fDv90rdXk=
 			</data>
 		</dict>
 		<key>Headers/BNCServerInterface.h</key>
@@ -167,14 +194,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			aOPDI53SkKBlc20iJ9dY3u0zDK3naimM2Ld1t4NHTRo=
+			7KCfdg9Tx2TQEn4o1BXZhQMqUu/C0oT6Pauk0AVvffk=
 			</data>
 		</dict>
 		<key>Headers/BNCServerRequestQueue.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			io7nwybnYVHG8S+YPRU8IIa5NpnrDvOGoBmQ2Ghu4k4=
+			CcsMvZQxWWORDaP2MikMbJVlrlzmjxrc7Q4rdivud4g=
 			</data>
 		</dict>
 		<key>Headers/BNCServerResponse.h</key>
@@ -188,35 +215,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			3gQoO35hxm+keXfULKfiQuyLRUXac7hxcgLsWUz+jHU=
+			/xGajrq8F9rhBA9hapvunLsxrPKdTClt9HsetzRbwsA=
 			</data>
 		</dict>
-		<key>Headers/BranchCrossPlatformID.h</key>
+		<key>Headers/BranchActivityItemProvider.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+YnYOGIDdjthLSab9pjxPPfDHF8zp8DQz++T3ygFafo=
+			b9kWQ/IzlXEH6YIect1s77TzUxEU5apcUaQV9k63HIs=
+			</data>
+		</dict>
+		<key>Headers/BranchCSSearchableItemAttributeSet.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			68JE3wmk22RO2wIl2MQoWf4g4xkDSp2YNcmcaZwqKvA=
 			</data>
 		</dict>
 		<key>Headers/BranchDeepLinkingController.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			LiZ4BrevGa93CUbb7dVFhwvMkYDe9qlWwHUWmyXHK+g=
+			porQ0PDYlCiRl8nEjmiDVZl0u5EbDYBfiDe9eZzCF+M=
 			</data>
 		</dict>
 		<key>Headers/BranchDelegate.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			JBgLpih6h8a9EBelonnaBq89AGVdXRPSuk3PjKsH10M=
+			Wl7uoKainOVHMgEYcKnZN1dxV6COyWWF9uHSuNNA8AI=
 			</data>
 		</dict>
 		<key>Headers/BranchEvent.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			h89kuzBbRRoYkdCYlBXgtuc0P9MVGGnu+dHOhCXIYSI=
+			kBlAqil4AtcnJWA4UtaVsqHeq0MtAqwzNtCvaVxI4Y0=
 			</data>
 		</dict>
 		<key>Headers/BranchLastAttributedTouchData.h</key>
@@ -233,11 +267,18 @@
 			akm4O0qdwMvJOS1cWIaDgOdxO8tEMadACLeJShRLjR0=
 			</data>
 		</dict>
+		<key>Headers/BranchLogger.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			2L9k0g1Vl7vDnuujARddIFaCrlHBFSuaqEeqHcvHK4c=
+			</data>
+		</dict>
 		<key>Headers/BranchPluginSupport.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			DT2mnB+cYTH8LPuK19cs+N9HnW0duwKZkVinNPJy4n0=
+			LgH4dNTnpnVyBJQsk5TA/LE97NAuT4wyS4L1EbDssMk=
 			</data>
 		</dict>
 		<key>Headers/BranchQRCode.h</key>
@@ -251,21 +292,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			zbr3a8clWlJdYC3Gy5SpfgnjO0Qw0vrRssWQWQvkqfs=
+			95Bl17Hq+8tWRgcCP/NB/+509dUour8tL6Q18pR7yDk=
 			</data>
 		</dict>
 		<key>Headers/BranchScene.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			BkB1DEVsP7j/DaQL3ePiuJHnZzwOOmaw50KWr1Fkiw4=
+			HiOUg1chbfRyFWeeN1m0mmGI8hDsEoOMOohNDSHuZiI=
+			</data>
+		</dict>
+		<key>Headers/BranchShareLink.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			92c4KiHHPhz7JRFOiz0sVfmz5yl3xa5/QZFyRF9JpKU=
 			</data>
 		</dict>
 		<key>Headers/BranchUniversalObject.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			fd9VfZyk8PgZl99n1BKjSX8FcfJ9vGpw3gNdi8WBOV4=
+			s4D7OujSCQGh4Vkm+Jh8d/F6A4XDTQNd4MYMxNmyChQ=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -273,6 +321,13 @@
 			<key>hash2</key>
 			<data>
 			yivhgxId8imQPmUz0lfsf26b3qvmoCkAn8OiajbK3R4=
+			</data>
+		</dict>
+		<key>PrivacyInfo.xcprivacy</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			t5RMx2YMjRcH6OpB85kAj8p6tfCFAQkb6jAhJCAnK5U=
 			</data>
 		</dict>
 	</dict>

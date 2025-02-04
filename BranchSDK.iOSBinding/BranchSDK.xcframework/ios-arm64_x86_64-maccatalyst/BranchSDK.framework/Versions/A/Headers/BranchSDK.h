@@ -24,8 +24,8 @@ FOUNDATION_EXPORT const unsigned char BranchSDKVersionString[];
 #import <BranchSDK/BranchLinkProperties.h>
 #import <BranchSDK/BranchUniversalObject.h>
 #import <BranchSDK/BranchQRCode.h>
+#import <BranchSDK/BranchLogger.h>
 
-#import <BranchSDK/BranchCrossPlatformID.h>
 #import <BranchSDK/BranchLastAttributedTouchData.h>
 
 #import <BranchSDK/BranchDeepLinkingController.h>
@@ -49,15 +49,16 @@ FOUNDATION_EXPORT const unsigned char BranchSDKVersionString[];
 
 // Cascading public headers...
 
-// BranchUniversalObject uses constants defined in BNCCommerceEvent.h
-#import <BranchSDK/BNCCommerceEvent.h>
-// BNCCommerceEvent.h includes BNCServerRequest.h
+// BranchUniversalObject uses constants defined in BNCCurrency.h and BNCProductCategory.h
+#import <BranchSDK/BNCCurrency.h>
+#import <BranchSDK/BNCProductCategory.h>
+
 #import <BranchSDK/BNCServerRequest.h>
 // BNCServerRequest includes BNCServerInterface.h
-#import <BranchSDK/BNCServerInterface.h>
+//#import <BranchSDK/BNCServerInterface.h>
 // BNCServerInterface.h includes BNCServerResponse.h and BNCPreferenceHelper.h
 #import <BranchSDK/BNCServerResponse.h>
-#import <BranchSDK/BNCPreferenceHelper.h>
+//#import <BranchSDK/BNCPreferenceHelper.h>
 
 // BNCLinkCache.h uses BNCLinkData.h
 #import <BranchSDK/BNCLinkData.h>

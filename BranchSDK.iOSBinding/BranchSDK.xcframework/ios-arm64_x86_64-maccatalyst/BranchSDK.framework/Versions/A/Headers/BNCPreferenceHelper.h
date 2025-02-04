@@ -40,8 +40,6 @@ NSURL* /* _Nonnull */ BNCURLForBranchDirectory(void);
 @property (copy, nonatomic) NSString *sessionParams;
 @property (copy, nonatomic) NSString *installParams;
 @property (assign, nonatomic) BOOL isDebug;
-@property (assign, nonatomic) BOOL checkedFacebookAppLinks;
-@property (assign, nonatomic) BOOL checkedAppleSearchAdAttribution;
 @property (nonatomic, assign, readwrite) BOOL appleAttributionTokenChecked;
 @property (nonatomic, assign, readwrite) BOOL hasOptedInBefore;
 @property (nonatomic, assign, readwrite) BOOL hasCalledHandleATTAuthorizationStatus;
@@ -50,24 +48,17 @@ NSURL* /* _Nonnull */ BNCURLForBranchDirectory(void);
 @property (assign, nonatomic) NSTimeInterval timeout;
 @property (copy, nonatomic) NSString *externalIntentURI;
 @property (strong, nonatomic) NSMutableDictionary *savedAnalyticsData;
-@property (strong, nonatomic) NSDictionary *appleSearchAdDetails;
-@property (assign, nonatomic) BOOL appleSearchAdNeedsSend;
 @property (copy, nonatomic) NSString *lastSystemBuildVersion;
 @property (copy, nonatomic) NSString *browserUserAgentString;
 @property (copy, nonatomic) NSString *referringURL;
-@property (copy, nonatomic) NSString *branchAPIURL;
 @property (assign, nonatomic) BOOL limitFacebookTracking;
 @property (strong, nonatomic) NSDate *previousAppBuildDate;
 @property (assign, nonatomic, readwrite) BOOL disableAdNetworkCallouts;
-
-@property (strong, nonatomic, readwrite) NSURL *faceBookAppLink;
 
 @property (nonatomic, copy, readwrite) NSString *patternListURL;
 @property (strong, nonatomic) NSArray<NSString *> *savedURLPatternList;
 @property (assign, nonatomic) NSInteger savedURLPatternListVersion;
 @property (assign, nonatomic) BOOL dropURLOpen;
-
-@property (assign, nonatomic) BOOL sendCloseRequests;
 
 @property (assign, nonatomic) BOOL trackingDisabled;
 
@@ -80,15 +71,19 @@ NSURL* /* _Nonnull */ BNCURLForBranchDirectory(void);
 @property (assign, nonatomic) NSInteger highestConversionValueSent;
 @property (strong, nonatomic) NSDate   *firstAppLaunchTime;
 @property (assign, nonatomic) BOOL invokeRegisterApp;
-@property (assign, nonatomic) BOOL logInAppPurchasesAsBranchEvents;
+
+@property (assign, nonatomic) BOOL eeaRegion;
+@property (assign, nonatomic) BOOL adPersonalizationConsent;
+@property (assign, nonatomic) BOOL adUserDataUsageConsent;
+
+@property (nonatomic, assign) NSString *attributionLevel;
+
 
 - (void) clearTrackingInformation;
 
 + (BNCPreferenceHelper *)sharedInstance;
 
-- (NSString *)getAPIBaseURL;
-- (NSString *)getAPIURL:(NSString *)endpoint;
-- (NSString *)getEndpointFromURL:(NSString *)url;
+- (void)setPatternListURL:(NSString *)url;
 
 - (void)setRequestMetadataKey:(NSString *)key value:(NSObject *)value;
 - (NSMutableDictionary *)requestMetadataDictionary;
@@ -107,5 +102,7 @@ NSURL* /* _Nonnull */ BNCURLForBranchDirectory(void);
 - (NSMutableString*) sanitizedMutableBaseURL:(NSString*)baseUrl;
 - (void) synchronize;  //  Flushes preference queue to persistence.
 + (void) clearAll;
+- (BOOL) eeaRegionInitialized;
+- (BOOL) attributionLevelInitialized;
 
 @end

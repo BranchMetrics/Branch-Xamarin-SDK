@@ -396,3 +396,11 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+BranchSDK.AndroidBinding/.DS_Store
+BranchSDK.iOSBinding/.DS_Store
+BranchSDK/.DS_Store
+Timber/.DS_Store
+Timber/Platforms/.DS_Store
+.DS_Store
+.vscode/launch.json
+Timber/nuget.config

@@ -14,6 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BranchPluginSupport *)instance;
 
+/**
+Sets a custom CDN base URL.
+@param url Base URL for CDN endpoints.
+*/
++ (void)setCDNBaseUrl:(NSString *)url;
+
 - (NSDictionary<NSString *, NSString *> *)deviceDescription;
 
 @end

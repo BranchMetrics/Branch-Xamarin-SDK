@@ -1,5 +1,11 @@
 Branch Xamarin SDK change log
 
+- 10.0.0
+  * Update to Branch Android SDK 5.15.0
+  * Update to Branch iOS SDK 3.8.0
+  * Update to use .NET-7
+  * Exposed new method `setConsumerProtectionAttributionLevel` to set CPP level
+
 - 9.0.1
   * Fix iOS linker issue causing crashes on pre-iOS 14 devices
   * Update Branch iOS SDK 2.1.3 (unreleased version)

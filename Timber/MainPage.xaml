@@ -9,34 +9,48 @@
             Padding="30,0"
             VerticalOptions="Center">
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
-
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
-
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
-
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
-
+            <!-- Add buttons for each Branch SDK method -->
+            <Button Text="Get Last Referring Params"
+                    Clicked="OnGetLastReferringParamsClicked"/>
+            <Button Text="Get Last Referring Branch Universal Object"
+                    Clicked="OnGetLastReferringBranchUniversalObjectClicked"/>
+            <Button Text="Get Last Referring Link Properties"
+                    Clicked="OnGetLastReferringBranchLinkPropertiesClicked"/>
+            <Button Text="Get First Referring Params"
+                    Clicked="OnGetFirstReferringParamsClicked"/>
+            <Button Text="Get First Referring Branch Universal Object"
+                    Clicked="OnGetFirstReferringBranchUniversalObjectClicked"/>
+            <Button Text="Get First Referring Link Properties"
+                    Clicked="OnGetFirstReferringBranchLinkPropertiesClicked"/>
+            <Button Text="Reset User Session"
+                    Clicked="OnResetUserSessionClicked"/>
+            <Button Text="Set Identity"
+                    Clicked="OnSetIdentityClicked"/>
+            <Button Text="Logout"
+                    Clicked="OnLogoutClicked"/>
+            <Button Text="Get Short URL"
+                    Clicked="OnGetShortURLClicked"/>
+            <Button Text="Share Link"
+                    Clicked="OnShareLinkClicked"/>
+            <Button Text="Send Event"
+                    Clicked="OnSendEventClicked"/>
+            <Button Text="Set Retry Interval"
+                    Clicked="OnSetRetryIntervalClicked"/>
+            <Button Text="Set Max Retries"
+                    Clicked="OnSetMaxRetriesClicked"/>
+            <Button Text="Set Network Timeout"
+                    Clicked="OnSetNetworkTimeoutClicked"/>
+            <Button Text="Register View"
+                    Clicked="OnRegisterViewClicked"/>
+            <Button Text="List On Spotlight"
+                    Clicked="OnListOnSpotlightClicked"/>
+            <Button Text="Set Request Metadata"
+                    Clicked="OnSetRequestMetadataClicked"/>
+            <Button Text="Toggle Tracking Disabled"
+                    Clicked="OnSetTrackingDisabledClicked"/>
+            <Button Text="Set DMA Params For EEA"
+                    Clicked="OnSetDMAParamsForEEAClicked"/>
         </VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>
-
